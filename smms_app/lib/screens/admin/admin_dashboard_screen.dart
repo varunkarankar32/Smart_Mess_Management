@@ -1,102 +1,75 @@
-import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/material.dart';
+
+import '../../services/mock_data_service.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_text_styles.dart';
 import '../../widgets/common_widgets.dart';
-import '../../services/mock_data_service.dart';
 
 class AdminDashboardScreen extends StatelessWidget {
   const AdminDashboardScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final headcount = MockDataService.liveHeadcount;
-    final capacity = MockDataService.totalCapacity;
-    final occupancy = (headcount / capacity * 100).clamp(0, 100).toInt();
-                      (scan) => Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
-                        child: GestureDetector(
-                          onTap: () => Navigator.pushNamed(
-                            context,
-                            scan.isValid ? '/admin/users' : '/admin/scanner',
-                          ),
-                          child: NeumorphicSection(
-                            padding: const EdgeInsets.all(12),
-                            child: Row(
-                              children: [
-                                Container(
-                                  width: 36,
-                                  height: 36,
-                                  decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      colors: scan.isValid
-                                          ? [
-                                              AppColors.accent.withValues(alpha: 0.25),
-                                              AppColors.surface,
-                                            ]
-                                          : [
-                                              AppColors.error.withValues(alpha: 0.25),
-                                              AppColors.surface,
-                                            ],
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
-                                    ),
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  child: Icon(
-                                    scan.isValid
-                                        ? Icons.check_circle_rounded
-                                        : Icons.cancel_rounded,
-                                    color: scan.isValid
-                                        ? AppColors.accentLight
-                                        : AppColors.error,
-                                    size: 18,
-                                  ),
-                                ),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        scan.userName,
-                                        style: AppTextStyles.labelLarge.copyWith(
-                                          fontSize: 13,
-                                        ),
-                                      ),
-                                      Text(
-                                        scan.rollNo,
-                                        style: AppTextStyles.bodySmall.copyWith(
-                                          fontSize: 10,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 4),
-                                      Text(
-                                        scan.isValid
-                                            ? 'Validated at serving counter'
-                                            : 'Needs review before serving',
-                                        style: AppTextStyles.bodySmall.copyWith(
-                                          color: scan.isValid
-                                              ? AppColors.accentLight
-                                              : AppColors.error,
-                                          fontSize: 10,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Text(
-                                  '${scan.scanTime.hour}:${scan.scanTime.minute.toString().padLeft(2, '0')}',
-                                  style: AppTextStyles.bodySmall,
-                                ),
-                              ],
-                            ),
-                          ),
+    final attendanceCount = MockDataService.todaysAttendanceCount;
+    final validAttendanceCount = MockDataService.todaysValidAttendanceCount;
+    final duplicateAttendanceCount =
+        MockDataService.todaysDuplicateAttendanceCount;
+    final pendingLeaves = MockDataService.leaveRequests.length;
+    final feedbackEntries = MockDataService.feedbackSubmissions.length;
+    final occupancy = (MockDataService.currentOccupancy).clamp(0, 100).toInt();
+    final recentScans = MockDataService.recentScans.take(5).toList();
+
+    return Scaffold(
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFF0F1724), Color(0xFF111B2D), Color(0xFF0F1724)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: SafeArea(
+          child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          'Admin Control Room',
+                          style: AppTextStyles.headlineLarge,
                         ),
                       ),
-                            color: AppColors.accent,
-                            size: 22,
-                          ),
+                      const NeuPill(label: 'Live'),
+                      const SizedBox(width: 8),
+                      const PulsingDot(color: AppColors.accentLight, size: 6),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Text(
+                    'QR validation, leave requests, feedback, and crowd flow are tracked in one live dashboard.',
+                    style: AppTextStyles.bodyMedium,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: NeumorphicSection(
+                    borderColor: AppColors.accent.withValues(alpha: 0.18),
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.verified_rounded,
+                          color: AppColors.accent,
+                          size: 22,
                         ),
                         const SizedBox(width: 12),
                         Expanded(
@@ -104,7 +77,7 @@ class AdminDashboardScreen extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Waste Prevention Active',
+                                'Attendance workflow active',
                                 style: AppTextStyles.labelLarge.copyWith(
                                   color: AppColors.accent,
                                   fontSize: 13,
@@ -112,7 +85,7 @@ class AdminDashboardScreen extends StatelessWidget {
                               ),
                               const SizedBox(height: 2),
                               Text(
-                                '142 "Not Eating" toggles today → 45 kg food saved → ₹6,750 saved',
+                                '$attendanceCount scans today, $duplicateAttendanceCount duplicate attempts blocked, $pendingLeaves leave requests pending.',
                                 style: AppTextStyles.bodySmall.copyWith(
                                   fontSize: 11,
                                 ),
@@ -126,16 +99,14 @@ class AdminDashboardScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 16),
-
-                // Overview Cards
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Row(
                     children: [
                       Expanded(
                         child: StatCard(
-                          title: 'Scanned Today',
-                          value: '$headcount',
+                          title: 'Scans Today',
+                          value: '$attendanceCount',
                           icon: Icons.qr_code_scanner_rounded,
                           color: AppColors.info,
                           subtitle: 'LIVE',
@@ -144,19 +115,11 @@ class AdminDashboardScreen extends StatelessWidget {
                       const SizedBox(width: 12),
                       Expanded(
                         child: StatCard(
-                          title: 'Occupancy',
-                          value: '$occupancy%',
-                          icon: Icons.people_alt_rounded,
-                          color: occupancy > 80
-                              ? AppColors.error
-                              : occupancy > 50
-                              ? AppColors.warning
-                              : AppColors.accent,
-                          subtitle: occupancy > 80
-                              ? 'HIGH'
-                              : occupancy > 50
-                              ? 'MODERATE'
-                              : 'LOW',
+                          title: 'Validated',
+                          value: '$validAttendanceCount',
+                          icon: Icons.check_circle_rounded,
+                          color: AppColors.accent,
+                          subtitle: 'OK',
                         ),
                       ),
                     ],
@@ -169,30 +132,29 @@ class AdminDashboardScreen extends StatelessWidget {
                     children: [
                       Expanded(
                         child: StatCard(
-                          title: 'Pending Rebates',
-                          value: '₹12.4K',
-                          icon: Icons.account_balance_wallet_rounded,
+                          title: 'Pending Leaves',
+                          value: '$pendingLeaves',
+                          icon: Icons.event_busy_rounded,
                           color: AppColors.warning,
                         ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
                         child: StatCard(
-                          title: 'Feedback Score',
-                          value: '4.2',
-                          icon: Icons.star_rounded,
+                          title: 'Feedback Entries',
+                          value: '$feedbackEntries',
+                          icon: Icons.rate_review_rounded,
                           color: AppColors.accentLight,
-                          subtitle: '↑ 0.3',
+                          subtitle: 'Student voice',
                         ),
                       ),
                     ],
                   ),
                 ),
                 const SizedBox(height: 20),
-
                 SectionHeader(
                   title: 'Operations Shortcuts',
-                  actionLabel: 'Live Board →',
+                  actionLabel: 'Live Board ->',
                   onAction: () =>
                       Navigator.pushNamed(context, '/admin/kitchen'),
                 ),
@@ -275,8 +237,6 @@ class AdminDashboardScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 12),
-
-                // Footfall Chart
                 const SectionHeader(title: 'Hourly Footfall'),
                 const SizedBox(height: 8),
                 Padding(
@@ -310,19 +270,21 @@ class AdminDashboardScreen extends StatelessWidget {
                             bottomTitles: AxisTitles(
                               sideTitles: SideTitles(
                                 showTitles: true,
+                                reservedSize: 28,
                                 getTitlesWidget: (value, meta) {
                                   final data = MockDataService.hourlyFootfall;
-                                  if (value.toInt() >= data.length)
+                                  if (value.toInt() >= data.length) {
                                     return const SizedBox();
+                                  }
                                   return Padding(
                                     padding: const EdgeInsets.only(top: 6),
                                     child: Text(
                                       (data[value.toInt()]['hour'] as String)
                                           .replaceAll(' ', '\n'),
+                                      textAlign: TextAlign.center,
                                       style: AppTextStyles.bodySmall.copyWith(
                                         fontSize: 8,
                                       ),
-                                      textAlign: TextAlign.center,
                                     ),
                                   );
                                 },
@@ -352,130 +314,113 @@ class AdminDashboardScreen extends StatelessWidget {
                               .asMap()
                               .entries
                               .map((entry) {
-                                final val = (entry.value['count'] as int)
+                                final value = (entry.value['count'] as int)
                                     .toDouble();
-                                final isPeak = val > 250;
+                                final isPeak = value > 250;
                                 return BarChartGroupData(
                                   x: entry.key,
                                   barRods: [
                                     BarChartRodData(
-                                      toY: val,
-                                      width: 14,
-                                      borderRadius: const BorderRadius.vertical(
-                                        top: Radius.circular(6),
-                                      ),
-                                      gradient: LinearGradient(
-                                        colors: isPeak
-                                            ? [
-                                                AppColors.error,
-                                                AppColors.warning,
-                                              ]
-                                            : [
-                                                AppColors.accent,
-                                                AppColors.accentLight,
-                                              ],
-                                        begin: Alignment.bottomCenter,
-                                        end: Alignment.topCenter,
-                                      ),
+                                      toY: value,
+                                      width: 12,
+                                      borderRadius: BorderRadius.circular(6),
+                                      color: isPeak
+                                          ? AppColors.warning
+                                          : AppColors.accent,
+                                      backDrawRodData:
+                                          BackgroundBarChartRodData(
+                                            show: true,
+                                            toY: 400,
+                                            color: AppColors.surfaceLight,
+                                          ),
                                     ),
                                   ],
                                 );
                               })
                               .toList(),
                         ),
-                        duration: const Duration(milliseconds: 800),
                       ),
                     ),
                   ),
                 ),
-                const SizedBox(height: 20),
-
-                // Recent Scans
-                const SectionHeader(title: 'Recent Scans'),
-                const SizedBox(height: 8),
-                ...MockDataService.recentScans
-                    .take(3)
-                    .map(
-                      (scan) => Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
-                        child: NeumorphicSection(
-                          padding: const EdgeInsets.all(12),
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 36,
-                                height: 36,
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    colors: scan.isValid
-                                        ? [
-                                            AppColors.accent.withValues(
-                                              alpha: 0.25,
-                                            ),
-                                            AppColors.surface,
-                                          ]
-                                        : [
-                                            AppColors.error.withValues(
-                                              alpha: 0.25,
-                                            ),
-                                            AppColors.surface,
-                                          ],
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
+                const SizedBox(height: 16),
+                SectionHeader(
+                  title: 'Recent Scans',
+                  actionLabel: 'Open Scanner ->',
+                  onAction: () =>
+                      Navigator.pushNamed(context, '/admin/scanner'),
+                ),
+                const SizedBox(height: 4),
+                ...recentScans.map(
+                  (scan) => Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
+                    child: GestureDetector(
+                      onTap: () => Navigator.pushNamed(
+                        context,
+                        scan.status == 'valid'
+                            ? '/admin/users'
+                            : '/admin/scanner',
+                      ),
+                      child: NeumorphicSection(
+                        padding: const EdgeInsets.all(12),
+                        borderColor: _scanBorderColor(scan.status),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 36,
+                              height: 36,
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: _scanGradient(scan.status),
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Icon(
+                                _scanIcon(scan.status),
+                                color: _scanIconColor(scan.status),
+                                size: 18,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    scan.userName,
+                                    style: AppTextStyles.labelLarge.copyWith(
+                                      fontSize: 13,
+                                    ),
                                   ),
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: Icon(
-                                  scan.isValid
-                                      ? Icons.check_circle_rounded
-                                      : Icons.cancel_rounded,
-                                  color: scan.isValid
-                                      ? AppColors.accentLight
-                                      : AppColors.error,
-                                  size: 18,
-                                ),
-                              ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      scan.userName,
-                                      style: AppTextStyles.labelLarge.copyWith(
-                                        fontSize: 13,
-                                      ),
+                                  Text(
+                                    scan.rollNo,
+                                    style: AppTextStyles.bodySmall.copyWith(
+                                      fontSize: 10,
                                     ),
-                                    Text(
-                                      scan.rollNo,
-                                      style: AppTextStyles.bodySmall.copyWith(
-                                        fontSize: 10,
-                                      ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    _scanMessage(scan.status),
+                                    style: AppTextStyles.bodySmall.copyWith(
+                                      color: _scanTextColor(scan.status),
+                                      fontSize: 10,
                                     ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      scan.isValid
-                                          ? 'Validated at serving counter'
-                                          : 'Needs review before serving',
-                                      style: AppTextStyles.bodySmall.copyWith(
-                                        color: scan.isValid
-                                            ? AppColors.accentLight
-                                            : AppColors.error,
-                                        fontSize: 10,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
-                              Text(
-                                '${scan.scanTime.hour}:${scan.scanTime.minute.toString().padLeft(2, '0')}',
-                                style: AppTextStyles.bodySmall,
-                              ),
-                            ],
-                          ),
+                            ),
+                            Text(
+                              '${scan.scanTime.hour}:${scan.scanTime.minute.toString().padLeft(2, '0')}',
+                              style: AppTextStyles.bodySmall,
+                            ),
+                          ],
                         ),
                       ),
                     ),
+                  ),
+                ),
                 const SizedBox(height: 100),
               ],
             ),
@@ -497,34 +442,84 @@ class AdminDashboardScreen extends StatelessWidget {
       onTap: () => Navigator.pushNamed(context, route),
       child: NeumorphicSection(
         borderColor: color.withValues(alpha: 0.18),
-        child: Row(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            NeuIconTile(
-              icon: icon,
-              iconColor: color,
-              padding: const EdgeInsets.all(8),
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    title,
-                    style: AppTextStyles.labelLarge.copyWith(fontSize: 12),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    subtitle,
-                    style: AppTextStyles.bodySmall.copyWith(fontSize: 9),
-                  ),
-                ],
-              ),
-            ),
+            Icon(icon, color: color, size: 24),
+            const SizedBox(height: 10),
+            Text(title, style: AppTextStyles.labelLarge.copyWith(fontSize: 13)),
+            const SizedBox(height: 2),
+            Text(subtitle, style: AppTextStyles.bodySmall),
           ],
         ),
       ),
     );
+  }
+
+  List<Color> _scanGradient(String status) {
+    switch (status) {
+      case 'invalid':
+        return [AppColors.error.withValues(alpha: 0.25), AppColors.surface];
+      case 'duplicate':
+        return [AppColors.warning.withValues(alpha: 0.25), AppColors.surface];
+      default:
+        return [AppColors.accent.withValues(alpha: 0.25), AppColors.surface];
+    }
+  }
+
+  Color _scanBorderColor(String status) {
+    switch (status) {
+      case 'invalid':
+        return AppColors.error.withValues(alpha: 0.18);
+      case 'duplicate':
+        return AppColors.warning.withValues(alpha: 0.18);
+      default:
+        return AppColors.accent.withValues(alpha: 0.18);
+    }
+  }
+
+  IconData _scanIcon(String status) {
+    switch (status) {
+      case 'invalid':
+        return Icons.cancel_rounded;
+      case 'duplicate':
+        return Icons.warning_amber_rounded;
+      default:
+        return Icons.check_circle_rounded;
+    }
+  }
+
+  Color _scanIconColor(String status) {
+    switch (status) {
+      case 'invalid':
+        return AppColors.error;
+      case 'duplicate':
+        return AppColors.warning;
+      default:
+        return AppColors.accentLight;
+    }
+  }
+
+  Color _scanTextColor(String status) {
+    switch (status) {
+      case 'invalid':
+        return AppColors.error;
+      case 'duplicate':
+        return AppColors.warning;
+      default:
+        return AppColors.accentLight;
+    }
+  }
+
+  String _scanMessage(String status) {
+    switch (status) {
+      case 'invalid':
+        return 'Needs review before serving';
+      case 'duplicate':
+        return 'Duplicate entry blocked';
+      default:
+        return 'Validated at serving counter';
+    }
   }
 }

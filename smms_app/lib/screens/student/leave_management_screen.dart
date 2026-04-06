@@ -3,6 +3,7 @@ import 'package:table_calendar/table_calendar.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_text_styles.dart';
 import '../../widgets/common_widgets.dart';
+import '../../services/mock_data_service.dart';
 
 class LeaveManagementScreen extends StatefulWidget {
   const LeaveManagementScreen({super.key});
@@ -16,6 +17,13 @@ class _LeaveManagementScreenState extends State<LeaveManagementScreen> {
   DateTime? _selectedDay;
   CalendarFormat _calendarFormat = CalendarFormat.month;
   final Map<DateTime, List<String>> _markedLeaves = {};
+  final TextEditingController _reasonController = TextEditingController();
+
+  @override
+  void dispose() {
+    _reasonController.dispose();
+    super.dispose();
+  }
 
   void _toggleMeal(DateTime day, String meal) {
     final key = DateTime(day.year, day.month, day.day);
@@ -30,10 +38,62 @@ class _LeaveManagementScreenState extends State<LeaveManagementScreen> {
     });
   }
 
+  void _submitLeaveRequest() {
+    if (_selectedDay == null) return;
+
+    final key = DateTime(
+      _selectedDay!.year,
+      _selectedDay!.month,
+      _selectedDay!.day,
+    );
+    final meals = _markedLeaves[key];
+    if (meals == null || meals.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Select at least one meal before submitting.'),
+        ),
+      );
+      return;
+    }
+
+    final reason = _reasonController.text.trim();
+    for (final meal in meals) {
+      MockDataService.submitLeave(
+        userId: MockDataService.currentUser.id,
+        date: key,
+        mealType: meal,
+        reason: reason,
+      );
+    }
+
+    setState(() {
+      _markedLeaves.remove(key);
+      _reasonController.clear();
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Leave request submitted for ${meals.length} meal(s).'),
+        backgroundColor: AppColors.accent,
+      ),
+    );
+  }
+
   int get _totalLeaveMeals =>
       _markedLeaves.values.fold(0, (sum, meals) => sum + meals.length);
   double get _estimatedSavings =>
       _totalLeaveMeals * 0.3; // 0.3 kg per meal saved
+
+  Color _statusColor(String status) {
+    switch (status) {
+      case 'approved':
+        return AppColors.accent;
+      case 'rejected':
+        return AppColors.error;
+      default:
+        return AppColors.warning;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -305,6 +365,63 @@ class _LeaveManagementScreenState extends State<LeaveManagementScreen> {
                                     ),
                                   );
                                 }),
+                                const SizedBox(height: 12),
+                                TextField(
+                                  controller: _reasonController,
+                                  minLines: 1,
+                                  maxLines: 3,
+                                  style: AppTextStyles.bodyMedium.copyWith(
+                                    color: AppColors.textPrimary,
+                                  ),
+                                  decoration: InputDecoration(
+                                    hintText: 'Optional reason for leave',
+                                    hintStyle: AppTextStyles.bodySmall.copyWith(
+                                      color: AppColors.textMuted,
+                                    ),
+                                    filled: true,
+                                    fillColor: AppColors.surface,
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(14),
+                                      borderSide: BorderSide(
+                                        color: Colors.white.withValues(
+                                          alpha: 0.05,
+                                        ),
+                                      ),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(14),
+                                      borderSide: BorderSide(
+                                        color: Colors.white.withValues(
+                                          alpha: 0.05,
+                                        ),
+                                      ),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(14),
+                                      borderSide: const BorderSide(
+                                        color: AppColors.accent,
+                                        width: 1.2,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 12),
+                                GestureDetector(
+                                  onTap: _submitLeaveRequest,
+                                  child: const NeumorphicSection(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 14,
+                                      vertical: 10,
+                                    ),
+                                    borderRadius: 12,
+                                    child: Center(
+                                      child: Text(
+                                        'Submit Leave Request',
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    ),
+                                  ),
+                                ),
                               ],
                             ),
                           ),
@@ -359,6 +476,80 @@ class _LeaveManagementScreenState extends State<LeaveManagementScreen> {
                               ),
                             ],
                           ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Builder(
+                          builder: (context) {
+                            final recentRequests = MockDataService.leaveRequests
+                                .where(
+                                  (request) =>
+                                      request.userId ==
+                                      MockDataService.currentUser.id,
+                                )
+                                .take(4)
+                                .toList();
+
+                            return NeumorphicSection(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Submitted Requests',
+                                    style: AppTextStyles.titleMedium,
+                                  ),
+                                  const SizedBox(height: 8),
+                                  if (recentRequests.isEmpty)
+                                    Text(
+                                      'No leave requests submitted yet.',
+                                      style: AppTextStyles.bodySmall.copyWith(
+                                        color: AppColors.textMuted,
+                                      ),
+                                    )
+                                  else
+                                    ...recentRequests.map(
+                                      (request) => Padding(
+                                        padding: const EdgeInsets.only(
+                                          bottom: 8,
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            const Icon(
+                                              Icons.event_busy_rounded,
+                                              color: AppColors.error,
+                                              size: 16,
+                                            ),
+                                            const SizedBox(width: 8),
+                                            Expanded(
+                                              child: Text(
+                                                '${request.mealType} - ${request.date.day}/${request.date.month}',
+                                                style: AppTextStyles.bodySmall,
+                                              ),
+                                            ),
+                                            Text(
+                                              MockDataService.leaveRequestStatus(
+                                                request.id,
+                                              ).toUpperCase(),
+                                              style: AppTextStyles.labelSmall
+                                                  .copyWith(
+                                                    color: _statusColor(
+                                                      MockDataService.leaveRequestStatus(
+                                                        request.id,
+                                                      ),
+                                                    ),
+                                                  ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            );
+                          },
                         ),
                       ),
                       const SizedBox(height: 100),

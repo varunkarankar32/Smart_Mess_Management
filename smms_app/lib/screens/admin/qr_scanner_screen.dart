@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+
+import '../../models/models.dart';
+import '../../services/mock_data_service.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_text_styles.dart';
 import '../../widgets/common_widgets.dart';
-import '../../services/mock_data_service.dart';
 
 class QrScannerScreen extends StatefulWidget {
   const QrScannerScreen({super.key});
@@ -13,9 +15,10 @@ class QrScannerScreen extends StatefulWidget {
 
 class _QrScannerScreenState extends State<QrScannerScreen>
     with SingleTickerProviderStateMixin {
-  String _scanStatus = 'idle'; // idle, valid, invalid, duplicate
+  String _scanStatus = 'idle';
   String _scannedName = '';
   String _scannedRoll = '';
+  AttendanceModel? _activeScan;
   late AnimationController _flashController;
 
   @override
@@ -33,17 +36,51 @@ class _QrScannerScreenState extends State<QrScannerScreen>
     super.dispose();
   }
 
-  void _simulateScan(bool isValid) {
-    final scans = MockDataService.recentScans;
-    final scan = scans[isValid ? 0 : 2];
+  void _simulateValidScan() {
+    final scan = MockDataService.recordAttendanceScan(
+      userId: MockDataService.demoValidatedUser.id,
+      userName: MockDataService.demoValidatedUser.name,
+      rollNo: MockDataService.demoValidatedUser.rollNo,
+      mealType: 'Lunch',
+      isValid: true,
+    );
+    _applyScan(scan);
+  }
+
+  void _simulateDuplicateScan() {
+    final scan = MockDataService.recordAttendanceScan(
+      userId: MockDataService.demoValidatedUser.id,
+      userName: MockDataService.demoValidatedUser.name,
+      rollNo: MockDataService.demoValidatedUser.rollNo,
+      mealType: 'Lunch',
+      isValid: true,
+    );
+    _applyScan(scan);
+  }
+
+  void _simulateInvalidScan() {
+    final scan = MockDataService.recordAttendanceScan(
+      userId: MockDataService.demoBlockedUser.id,
+      userName: MockDataService.demoBlockedUser.name,
+      rollNo: MockDataService.demoBlockedUser.rollNo,
+      mealType: 'Lunch',
+      isValid: false,
+    );
+    _applyScan(scan);
+  }
+
+  void _applyScan(AttendanceModel scan) {
     setState(() {
-      _scanStatus = isValid ? 'valid' : 'invalid';
+      _scanStatus = scan.status;
       _scannedName = scan.userName;
       _scannedRoll = scan.rollNo;
+      _activeScan = scan;
     });
     _flashController.forward(from: 0);
     Future.delayed(const Duration(seconds: 3), () {
-      if (mounted) setState(() => _scanStatus = 'idle');
+      if (mounted) {
+        setState(() => _scanStatus = 'idle');
+      }
     });
   }
 
@@ -80,7 +117,7 @@ class _QrScannerScreenState extends State<QrScannerScreen>
       case 'invalid':
         return 'Invalid / Already Scanned';
       case 'duplicate':
-        return 'Guest Pass';
+        return 'Duplicate Blocked';
       default:
         return 'Ready to Scan';
     }
@@ -88,6 +125,8 @@ class _QrScannerScreenState extends State<QrScannerScreen>
 
   @override
   Widget build(BuildContext context) {
+    final recentLog = MockDataService.recentScans.take(4).toList();
+
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
@@ -98,38 +137,35 @@ class _QrScannerScreenState extends State<QrScannerScreen>
           ),
         ),
         child: SafeArea(
-          child: Column(
-            children: [
-              // Header
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        'QR Scanner',
-                        style: AppTextStyles.headlineLarge,
+          child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          'QR Scanner',
+                          style: AppTextStyles.headlineLarge,
+                        ),
                       ),
-                    ),
-                    const Spacer(),
-                    const NeuPill(label: 'Camera'),
-                    const SizedBox(width: 8),
-                    const PulsingDot(color: AppColors.accentLight, size: 6),
-                    const SizedBox(width: 6),
-                    Text(
-                      'Camera Active',
-                      style: AppTextStyles.bodySmall.copyWith(
-                        color: AppColors.accentLight,
+                      const NeuPill(label: 'Camera'),
+                      const SizedBox(width: 8),
+                      const PulsingDot(color: AppColors.accentLight, size: 6),
+                      const SizedBox(width: 6),
+                      Text(
+                        'Camera Active',
+                        style: AppTextStyles.bodySmall.copyWith(
+                          color: AppColors.accentLight,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(height: 24),
-
-              // Camera View Placeholder
-              Expanded(
-                child: Padding(
+                const SizedBox(height: 24),
+                Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: NeumorphicSection(
                     padding: const EdgeInsets.all(4),
@@ -140,7 +176,6 @@ class _QrScannerScreenState extends State<QrScannerScreen>
                     child: Stack(
                       alignment: Alignment.center,
                       children: [
-                        // Camera placeholder
                         Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -165,8 +200,6 @@ class _QrScannerScreenState extends State<QrScannerScreen>
                             ),
                           ],
                         ),
-
-                        // Scan crosshair overlay
                         if (_scanStatus == 'idle')
                           Container(
                             width: 200,
@@ -179,8 +212,6 @@ class _QrScannerScreenState extends State<QrScannerScreen>
                               ),
                             ),
                           ),
-
-                        // Result overlay
                         if (_scanStatus != 'idle')
                           FadeTransition(
                             opacity: CurvedAnimation(
@@ -208,11 +239,12 @@ class _QrScannerScreenState extends State<QrScannerScreen>
                                       color: _scanColor,
                                     ),
                                   ),
-                                  if (_scanStatus == 'valid') ...[
+                                  if (_scannedName.isNotEmpty) ...[
                                     const SizedBox(height: 8),
                                     Text(
                                       _scannedName,
                                       style: AppTextStyles.headlineMedium,
+                                      textAlign: TextAlign.center,
                                     ),
                                     Text(
                                       _scannedRoll,
@@ -227,83 +259,203 @@ class _QrScannerScreenState extends State<QrScannerScreen>
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 16),
-
-              // Simulate Buttons (for demo)
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: NeumorphicSection(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Demo Controls',
-                        style: AppTextStyles.labelSmall.copyWith(
-                          color: AppColors.textMuted,
+                const SizedBox(height: 16),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: NeumorphicSection(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Demo Controls',
+                          style: AppTextStyles.labelSmall.copyWith(
+                            color: AppColors.textMuted,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 10),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: GestureDetector(
-                              onTap: () => _simulateScan(true),
-                              child: NeumorphicSection(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 12,
-                                ),
-                                borderRadius: 12,
-                                borderColor: AppColors.accent.withValues(
-                                  alpha: 0.18,
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    '✅ Valid Scan',
-                                    style: AppTextStyles.labelLarge.copyWith(
-                                      color: AppColors.accentLight,
-                                      fontSize: 12,
+                        const SizedBox(height: 10),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: GestureDetector(
+                                onTap: _simulateValidScan,
+                                child: NeumorphicSection(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 12,
+                                  ),
+                                  borderRadius: 12,
+                                  borderColor: AppColors.accent.withValues(
+                                    alpha: 0.18,
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      'Valid Scan',
+                                      style: AppTextStyles.labelLarge.copyWith(
+                                        color: AppColors.accentLight,
+                                        fontSize: 12,
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: GestureDetector(
-                              onTap: () => _simulateScan(false),
-                              child: NeumorphicSection(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 12,
-                                ),
-                                borderRadius: 12,
-                                borderColor: AppColors.error.withValues(
-                                  alpha: 0.18,
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    '❌ Invalid Scan',
-                                    style: AppTextStyles.labelLarge.copyWith(
-                                      color: AppColors.error,
-                                      fontSize: 12,
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: GestureDetector(
+                                onTap: _simulateDuplicateScan,
+                                child: NeumorphicSection(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 12,
+                                  ),
+                                  borderRadius: 12,
+                                  borderColor: AppColors.warning.withValues(
+                                    alpha: 0.18,
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      'Duplicate Scan',
+                                      style: AppTextStyles.labelLarge.copyWith(
+                                        color: AppColors.warning,
+                                        fontSize: 12,
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
                             ),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        GestureDetector(
+                          onTap: _simulateInvalidScan,
+                          child: NeumorphicSection(
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            borderRadius: 12,
+                            borderColor: AppColors.error.withValues(
+                              alpha: 0.18,
+                            ),
+                            child: Center(
+                              child: Text(
+                                'Invalid Scan',
+                                style: AppTextStyles.labelLarge.copyWith(
+                                  color: AppColors.error,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ),
                           ),
-                        ],
-                      ),
-                    ],
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
+                          'Tap Valid Scan once, then Duplicate Scan to see blocking.',
+                          style: AppTextStyles.bodySmall.copyWith(
+                            color: AppColors.textMuted,
+                            fontSize: 10,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 20),
-            ],
+                const SizedBox(height: 14),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: NeumorphicSection(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              'Live Scan Log',
+                              style: AppTextStyles.titleMedium,
+                            ),
+                            const Spacer(),
+                            if (_activeScan != null)
+                              Text(
+                                _activeScan!.status.toUpperCase(),
+                                style: AppTextStyles.labelSmall.copyWith(
+                                  color: _scanColor,
+                                ),
+                              ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        ...recentLog.map(
+                          (scan) => Padding(
+                            padding: const EdgeInsets.only(bottom: 8),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  _scanIconFor(scan.status),
+                                  color: _scanColorFor(scan.status),
+                                  size: 16,
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(
+                                    scan.userName,
+                                    style: AppTextStyles.bodySmall,
+                                  ),
+                                ),
+                                Text(
+                                  _scanMessageFor(scan.status),
+                                  style: AppTextStyles.labelSmall.copyWith(
+                                    color: _scanColorFor(scan.status),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+              ],
+            ),
           ),
         ),
       ),
     );
+  }
+
+  IconData _scanIconFor(String status) {
+    switch (status) {
+      case 'valid':
+        return Icons.check_circle_rounded;
+      case 'invalid':
+        return Icons.cancel_rounded;
+      case 'duplicate':
+        return Icons.warning_amber_rounded;
+      default:
+        return Icons.qr_code_scanner_rounded;
+    }
+  }
+
+  Color _scanColorFor(String status) {
+    switch (status) {
+      case 'valid':
+        return AppColors.accent;
+      case 'invalid':
+        return AppColors.error;
+      case 'duplicate':
+        return AppColors.warning;
+      default:
+        return AppColors.info;
+    }
+  }
+
+  String _scanMessageFor(String status) {
+    switch (status) {
+      case 'valid':
+        return 'Validated';
+      case 'invalid':
+        return 'Rejected';
+      case 'duplicate':
+        return 'Duplicate';
+      default:
+        return 'Pending';
+    }
   }
 }

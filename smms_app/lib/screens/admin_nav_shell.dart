@@ -196,6 +196,14 @@ class _AdminMoreScreen extends StatelessWidget {
                 ),
                 _moreItem(
                   context,
+                  Icons.event_busy_rounded,
+                  'Leave Review',
+                  'Approve or reject meal leave requests',
+                  AppColors.warning,
+                  '/admin/leaves',
+                ),
+                _moreItem(
+                  context,
                   Icons.kitchen_rounded,
                   'Kitchen Display',
                   'Live serving line status',

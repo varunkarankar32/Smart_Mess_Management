@@ -17,6 +17,7 @@ import 'screens/admin/menu_management_screen.dart';
 import 'screens/admin/analytics_screen.dart';
 import 'screens/admin/inventory_screen.dart';
 import 'screens/admin/feedback_inbox_screen.dart';
+import 'screens/admin/leave_requests_screen.dart';
 import 'screens/admin/user_management_screen.dart';
 import 'screens/admin/kitchen_display_screen.dart';
 import 'screens/innovative/simulation_screen.dart';
@@ -63,6 +64,7 @@ class SMSSApp extends StatelessWidget {
         '/admin/analytics': (context) => const AnalyticsScreen(),
         '/admin/inventory': (context) => const InventoryScreen(),
         '/admin/feedback': (context) => const FeedbackInboxScreen(),
+        '/admin/leaves': (context) => const LeaveRequestsScreen(),
         '/admin/users': (context) => const UserManagementScreen(),
         '/admin/kitchen': (context) => const KitchenDisplayScreen(),
         '/admin/simulation': (context) => const SimulationScreen(),
