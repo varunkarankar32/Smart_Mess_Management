@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+
+import '../../models/models.dart';
+import '../../services/mock_data_service.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_text_styles.dart';
 import '../../widgets/common_widgets.dart';
-import '../../services/mock_data_service.dart';
 
 class StudentHomeScreen extends StatefulWidget {
   const StudentHomeScreen({super.key});
@@ -11,28 +13,126 @@ class StudentHomeScreen extends StatefulWidget {
   State<StudentHomeScreen> createState() => _StudentHomeScreenState();
 }
 
-class _StudentHomeScreenState extends State<StudentHomeScreen> with TickerProviderStateMixin {
+class _StudentHomeScreenState extends State<StudentHomeScreen> {
   bool _notEatingToday = false;
-  late AnimationController _slideController;
-
-  @override
-  void initState() {
-    super.initState();
-    _slideController = AnimationController(vsync: this, duration: const Duration(milliseconds: 800));
-    _slideController.forward();
-  }
-
-  @override
-  void dispose() {
-    _slideController.dispose();
-    super.dispose();
-  }
 
   String _getGreeting() {
     final hour = DateTime.now().hour;
     if (hour < 12) return 'Good Morning';
     if (hour < 17) return 'Good Afternoon';
     return 'Good Evening';
+  }
+
+  void _openMealSheet(MealModel meal) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (sheetContext) {
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+          child: SafeArea(
+            child: NeumorphicSection(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Text(meal.mealType, style: AppTextStyles.titleLarge),
+                      const Spacer(),
+                      NeuIconTile(
+                        icon: Icons.close_rounded,
+                        iconColor: AppColors.textSecondary,
+                        onTap: () => Navigator.pop(sheetContext),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  ...meal.items.map(
+                    (item) => Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: Row(
+                        children: [
+                          Text(
+                            item.imageEmoji,
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              item.name,
+                              style: AppTextStyles.bodyMedium,
+                            ),
+                          ),
+                          Text(
+                            '${item.calories} kcal',
+                            style: AppTextStyles.bodySmall.copyWith(
+                              color: AppColors.textMuted,
+                              fontSize: 10,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pop(sheetContext);
+                      Navigator.pushNamed(context, '/student/menu');
+                    },
+                    child: const NeumorphicSection(
+                      padding: EdgeInsets.symmetric(vertical: 12),
+                      child: Center(
+                        child: Text(
+                          'Open Full Menu',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _quickLink({
+    required IconData icon,
+    required String label,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: NeumorphicSection(
+        padding: const EdgeInsets.symmetric(vertical: 14),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, color: color, size: 22),
+            const SizedBox(height: 6),
+            Text(
+              label,
+              style: AppTextStyles.labelSmall.copyWith(
+                color: Colors.white,
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -45,9 +145,9 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> with TickerProvid
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFF0A0E1A), Color(0xFF0F172A)],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+            colors: [Color(0xFF0F1724), Color(0xFF111B2D), Color(0xFF0F1724)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
         ),
         child: SafeArea(
@@ -56,7 +156,6 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> with TickerProvid
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // ─── Header ───
                 Padding(
                   padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
                   child: Row(
@@ -65,125 +164,118 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> with TickerProvid
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(_getGreeting(), style: AppTextStyles.bodyMedium),
+                            Text(
+                              _getGreeting(),
+                              style: AppTextStyles.bodyMedium,
+                            ),
                             const SizedBox(height: 2),
                             Text(user.name, style: AppTextStyles.headlineLarge),
+                            const SizedBox(height: 8),
+                            Wrap(
+                              spacing: 8,
+                              runSpacing: 8,
+                              children: const [
+                                NeuPill(label: 'Student Mode'),
+                                NeuPill(label: 'Live Menu'),
+                              ],
+                            ),
                           ],
                         ),
                       ),
-                      GestureDetector(
-                        onTap: () => Navigator.pushNamed(context, '/student/notifications'),
-                        child: Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            color: AppColors.surfaceLight,
-                            borderRadius: BorderRadius.circular(14),
-                            border: Border.all(color: Colors.white.withValues(alpha: 0.06)),
-                          ),
-                          child: Stack(
-                            children: [
-                              const Icon(Icons.notifications_none_rounded, color: AppColors.textSecondary, size: 24),
-                              Positioned(
-                                right: 0, top: 0,
-                                child: Container(
-                                  width: 8, height: 8,
-                                  decoration: const BoxDecoration(color: AppColors.error, shape: BoxShape.circle),
-                                ),
-                              ),
-                            ],
-                          ),
+                      NeuIconTile(
+                        icon: Icons.notifications_none_rounded,
+                        iconColor: AppColors.textSecondary,
+                        onTap: () => Navigator.pushNamed(
+                          context,
+                          '/student/notifications',
                         ),
                       ),
                       const SizedBox(width: 10),
-                      GestureDetector(
-                        onTap: () => Navigator.pushNamed(context, '/student/profile'),
-                        child: Container(
-                          width: 44, height: 44,
-                          decoration: BoxDecoration(
-                            gradient: AppColors.accentGradient,
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                          child: Center(
-                            child: Text(
-                              user.name.substring(0, 1),
-                              style: AppTextStyles.titleLarge.copyWith(color: Colors.white),
-                            ),
-                          ),
-                        ),
+                      NeuIconTile(
+                        icon: Icons.person_rounded,
+                        iconColor: Colors.white,
+                        onTap: () =>
+                            Navigator.pushNamed(context, '/student/profile'),
                       ),
                     ],
                   ),
                 ),
                 const SizedBox(height: 20),
-
-                // ─── Crowd Meter ───
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: CrowdMeterGauge(occupancy: occupancy),
                 ),
                 const SizedBox(height: 16),
-
-                // ─── Quick Actions ───
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Row(
                     children: [
                       Expanded(
                         child: GestureDetector(
-                          onTap: () => Navigator.pushNamed(context, '/student/qr'),
-                          child: Container(
+                          onTap: () =>
+                              Navigator.pushNamed(context, '/student/qr'),
+                          child: NeumorphicSection(
                             padding: const EdgeInsets.symmetric(vertical: 16),
-                            decoration: BoxDecoration(
-                              gradient: AppColors.accentGradient,
-                              borderRadius: BorderRadius.circular(16),
-                              boxShadow: [
-                                BoxShadow(color: AppColors.accent.withValues(alpha: 0.3), blurRadius: 20, offset: const Offset(0, 8)),
-                              ],
-                            ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                const Icon(Icons.qr_code_2_rounded, color: Colors.white, size: 24),
+                                const Icon(
+                                  Icons.qr_code_2_rounded,
+                                  color: AppColors.accentLight,
+                                  size: 24,
+                                ),
                                 const SizedBox(width: 10),
-                                Text('Show QR Pass', style: AppTextStyles.labelLarge.copyWith(color: Colors.white)),
+                                Text(
+                                  'Show QR Pass',
+                                  style: AppTextStyles.labelLarge.copyWith(
+                                    color: Colors.white,
+                                  ),
+                                ),
                               ],
                             ),
                           ),
                         ),
                       ),
                       const SizedBox(width: 12),
-                      // Not Eating Toggle
-                      GlassCard(
-                        padding: const EdgeInsets.all(8),
-                        borderRadius: 16,
-                        borderColor: _notEatingToday ? AppColors.error.withValues(alpha: 0.3) : null,
-                        child: Column(
-                          children: [
-                            Transform.scale(
-                              scale: 0.8,
-                              child: Switch(
-                                value: _notEatingToday,
-                                onChanged: (v) => setState(() => _notEatingToday = v),
-                                activeTrackColor: AppColors.error,
+                      GestureDetector(
+                        onTap: () =>
+                            setState(() => _notEatingToday = !_notEatingToday),
+                        child: NeumorphicSection(
+                          padding: const EdgeInsets.all(10),
+                          borderRadius: 18,
+                          child: Column(
+                            children: [
+                              Transform.scale(
+                                scale: 0.8,
+                                child: Switch(
+                                  value: _notEatingToday,
+                                  onChanged: (v) =>
+                                      setState(() => _notEatingToday = v),
+                                  activeTrackColor: AppColors.error,
+                                ),
                               ),
-                            ),
-                            Text(
-                              _notEatingToday ? 'Away' : 'Eating',
-                              style: AppTextStyles.bodySmall.copyWith(
-                                color: _notEatingToday ? AppColors.error : AppColors.accent,
-                                fontSize: 10,
+                              Text(
+                                _notEatingToday ? 'Away' : 'Eating',
+                                style: AppTextStyles.bodySmall.copyWith(
+                                  color: _notEatingToday
+                                      ? AppColors.error
+                                      : AppColors.accentLight,
+                                  fontSize: 10,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ],
                   ),
                 ),
                 const SizedBox(height: 24),
-
-                // ─── Today's Menu ───
-                const SectionHeader(title: "Today's Menu", actionLabel: 'Full Menu →'),
+                SectionHeader(
+                  title: "Today's Menu",
+                  actionLabel: 'Full Menu →',
+                  onAction: () => Navigator.pushNamed(context, '/student/menu'),
+                ),
                 const SizedBox(height: 8),
                 SizedBox(
                   height: 175,
@@ -194,50 +286,79 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> with TickerProvid
                     itemCount: meals.length,
                     itemBuilder: (context, index) {
                       final meal = meals[index];
-                      return Container(
-                        width: 160,
-                        margin: const EdgeInsets.symmetric(horizontal: 4),
-                        child: GlassCard(
-                          padding: const EdgeInsets.all(14),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                                    decoration: BoxDecoration(
-                                      color: AppColors.accent.withValues(alpha: 0.15),
-                                      borderRadius: BorderRadius.circular(8),
+                      return GestureDetector(
+                        onTap: () => _openMealSheet(meal),
+                        child: Container(
+                          width: 160,
+                          margin: const EdgeInsets.symmetric(horizontal: 4),
+                          child: GlassCard(
+                            padding: const EdgeInsets.all(14),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 3,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.accent.withValues(
+                                      alpha: 0.15,
                                     ),
-                                    child: Text(
-                                      meal.mealType,
-                                      style: AppTextStyles.labelSmall.copyWith(color: AppColors.accent, fontSize: 10),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Text(
+                                    meal.mealType,
+                                    style: AppTextStyles.labelSmall.copyWith(
+                                      color: AppColors.accent,
+                                      fontSize: 10,
                                     ),
                                   ),
-                                ],
-                              ),
-                              const SizedBox(height: 10),
-                              ...meal.items.take(3).map((item) => Padding(
-                                padding: const EdgeInsets.only(bottom: 4),
-                                child: Row(
-                                  children: [
-                                    Text(item.imageEmoji, style: const TextStyle(fontSize: 14)),
-                                    const SizedBox(width: 6),
-                                    Expanded(
-                                      child: Text(
-                                        item.name,
-                                        style: AppTextStyles.bodySmall.copyWith(color: AppColors.textPrimary, fontSize: 11),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
+                                ),
+                                const SizedBox(height: 10),
+                                ...meal.items
+                                    .take(3)
+                                    .map(
+                                      (item) => Padding(
+                                        padding: const EdgeInsets.only(
+                                          bottom: 4,
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              item.imageEmoji,
+                                              style: const TextStyle(
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                            const SizedBox(width: 6),
+                                            Expanded(
+                                              child: Text(
+                                                item.name,
+                                                style: AppTextStyles.bodySmall
+                                                    .copyWith(
+                                                      color:
+                                                          AppColors.textPrimary,
+                                                      fontSize: 11,
+                                                    ),
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                  ],
-                                ),
-                              )),
-                              if (meal.items.length > 3)
-                                Text('+${meal.items.length - 3} more', style: AppTextStyles.bodySmall.copyWith(color: AppColors.accent, fontSize: 10)),
-                            ],
+                                if (meal.items.length > 3)
+                                  Text(
+                                    '+${meal.items.length - 3} more',
+                                    style: AppTextStyles.bodySmall.copyWith(
+                                      color: AppColors.accent,
+                                      fontSize: 10,
+                                    ),
+                                  ),
+                              ],
+                            ),
                           ),
                         ),
                       );
@@ -245,8 +366,6 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> with TickerProvid
                   ),
                 ),
                 const SizedBox(height: 24),
-
-                // ─── Quick Stats ───
                 const SectionHeader(title: 'Your Stats'),
                 const SizedBox(height: 8),
                 Padding(
@@ -302,15 +421,67 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> with TickerProvid
                   ),
                 ),
                 const SizedBox(height: 24),
-
-                // ─── Weather Advisory ───
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: SectionHeader(
+                    title: 'Quick Links',
+                    actionLabel: 'More →',
+                    onAction: () =>
+                        Navigator.pushNamed(context, '/student/feedback'),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: GridView.count(
+                    crossAxisCount: 2,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10,
+                    childAspectRatio: 1.7,
+                    children: [
+                      _quickLink(
+                        icon: Icons.restaurant_menu_rounded,
+                        label: 'Browse Menu',
+                        color: AppColors.accentLight,
+                        onTap: () =>
+                            Navigator.pushNamed(context, '/student/menu'),
+                      ),
+                      _quickLink(
+                        icon: Icons.rate_review_rounded,
+                        label: 'Submit Review',
+                        color: AppColors.warning,
+                        onTap: () =>
+                            Navigator.pushNamed(context, '/student/feedback'),
+                      ),
+                      _quickLink(
+                        icon: Icons.event_busy_rounded,
+                        label: 'Plan Leave',
+                        color: AppColors.error,
+                        onTap: () =>
+                            Navigator.pushNamed(context, '/student/leave'),
+                      ),
+                      _quickLink(
+                        icon: Icons.how_to_vote_rounded,
+                        label: 'Vote Dish',
+                        color: AppColors.accent,
+                        onTap: () =>
+                            Navigator.pushNamed(context, '/student/vote'),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 24),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: GlassCard(
                     borderColor: AppColors.info.withValues(alpha: 0.2),
                     child: Row(
                       children: [
-                        Text(MockDataService.currentWeather.icon, style: const TextStyle(fontSize: 32)),
+                        Text(
+                          MockDataService.currentWeather.icon,
+                          style: const TextStyle(fontSize: 32),
+                        ),
                         const SizedBox(width: 12),
                         Expanded(
                           child: Column(
@@ -318,11 +489,13 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> with TickerProvid
                             children: [
                               Text(
                                 '${MockDataService.currentWeather.temperature.toInt()}°C · ${MockDataService.currentWeather.condition.toUpperCase()}',
-                                style: AppTextStyles.labelLarge.copyWith(color: AppColors.info),
+                                style: AppTextStyles.labelLarge.copyWith(
+                                  color: AppColors.info,
+                                ),
                               ),
                               const SizedBox(height: 2),
                               Text(
-                                'Hot soups & chai recommended today!',
+                                MockDataService.currentWeather.suggestion,
                                 style: AppTextStyles.bodySmall,
                                 maxLines: 2,
                               ),

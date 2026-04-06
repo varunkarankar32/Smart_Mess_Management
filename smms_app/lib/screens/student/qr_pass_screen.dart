@@ -14,7 +14,8 @@ class QrPassScreen extends StatefulWidget {
   State<QrPassScreen> createState() => _QrPassScreenState();
 }
 
-class _QrPassScreenState extends State<QrPassScreen> with TickerProviderStateMixin {
+class _QrPassScreenState extends State<QrPassScreen>
+    with TickerProviderStateMixin {
   late AnimationController _pulseController;
   late AnimationController _rotateController;
   late Timer _timer;
@@ -24,8 +25,14 @@ class _QrPassScreenState extends State<QrPassScreen> with TickerProviderStateMix
   @override
   void initState() {
     super.initState();
-    _pulseController = AnimationController(vsync: this, duration: const Duration(milliseconds: 1500))..repeat(reverse: true);
-    _rotateController = AnimationController(vsync: this, duration: const Duration(seconds: 8))..repeat();
+    _pulseController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1500),
+    )..repeat(reverse: true);
+    _rotateController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 8),
+    )..repeat();
     _refreshQR();
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
       setState(() {
@@ -39,7 +46,8 @@ class _QrPassScreenState extends State<QrPassScreen> with TickerProviderStateMix
   }
 
   void _refreshQR() {
-    _qrData = 'SMMS|${MockDataService.currentUser.id}|${DateTime.now().millisecondsSinceEpoch}|${Random().nextInt(99999)}';
+    _qrData =
+        'SMMS|${MockDataService.currentUser.id}|${DateTime.now().millisecondsSinceEpoch}|${Random().nextInt(99999)}';
   }
 
   @override
@@ -66,9 +74,9 @@ class _QrPassScreenState extends State<QrPassScreen> with TickerProviderStateMix
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFF0A0E1A), Color(0xFF0F172A), Color(0xFF0A0E1A)],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+            colors: [Color(0xFF0F1724), Color(0xFF111B2D), Color(0xFF0F1724)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
         ),
         child: SafeArea(
@@ -76,30 +84,25 @@ class _QrPassScreenState extends State<QrPassScreen> with TickerProviderStateMix
             children: [
               // App Bar
               Padding(
-                padding: const EdgeInsets.fromLTRB(8, 8, 20, 0),
+                padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
                 child: Row(
                   children: [
-                    IconButton(
-                      icon: const Icon(Icons.arrow_back_ios_rounded, color: AppColors.textSecondary),
-                      onPressed: () => Navigator.pop(context),
+                    NeuIconTile(
+                      icon: Icons.arrow_back_ios_rounded,
+                      iconColor: AppColors.textSecondary,
+                      onTap: () => Navigator.pop(context),
                     ),
-                    Text('Entry Pass', style: AppTextStyles.titleLarge),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        'Entry Pass',
+                        style: AppTextStyles.titleLarge,
+                      ),
+                    ),
                     const Spacer(),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: AppColors.accent.withValues(alpha: 0.15),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const PulsingDot(color: AppColors.accent, size: 6),
-                          const SizedBox(width: 6),
-                          Text('ACTIVE', style: AppTextStyles.labelSmall.copyWith(color: AppColors.accent, fontWeight: FontWeight.w700)),
-                        ],
-                      ),
-                    ),
+                    const NeuPill(label: 'ACTIVE'),
+                    const SizedBox(width: 8),
+                    const PulsingDot(color: AppColors.accentLight, size: 6),
                   ],
                 ),
               ),
@@ -117,7 +120,9 @@ class _QrPassScreenState extends State<QrPassScreen> with TickerProviderStateMix
                         center: Alignment.center,
                         startAngle: 0,
                         endAngle: pi * 2,
-                        transform: GradientRotation(_rotateController.value * pi * 2),
+                        transform: GradientRotation(
+                          _rotateController.value * pi * 2,
+                        ),
                         colors: const [
                           AppColors.accent,
                           Colors.transparent,
@@ -130,26 +135,14 @@ class _QrPassScreenState extends State<QrPassScreen> with TickerProviderStateMix
                     child: child,
                   );
                 },
-                child: Container(
+                child: NeumorphicSection(
                   padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: AppColors.surface,
-                    borderRadius: BorderRadius.circular(24),
-                  ),
+                  borderRadius: 24,
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       // Profile
-                      Container(
-                        width: 56, height: 56,
-                        decoration: BoxDecoration(
-                          gradient: AppColors.accentGradient,
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Center(
-                          child: Text(user.name.substring(0, 1), style: AppTextStyles.headlineLarge.copyWith(color: Colors.white)),
-                        ),
-                      ),
+                      const NeuPill(label: 'Meal Pass'),
                       const SizedBox(height: 10),
                       Text(user.name, style: AppTextStyles.titleMedium),
                       Text(user.rollNo, style: AppTextStyles.bodySmall),
@@ -167,20 +160,34 @@ class _QrPassScreenState extends State<QrPassScreen> with TickerProviderStateMix
                           version: QrVersions.auto,
                           size: 180,
                           backgroundColor: Colors.white,
-                          eyeStyle: const QrEyeStyle(eyeShape: QrEyeShape.square, color: Color(0xFF0F172A)),
-                          dataModuleStyle: const QrDataModuleStyle(dataModuleShape: QrDataModuleShape.square, color: Color(0xFF0F172A)),
+                          eyeStyle: const QrEyeStyle(
+                            eyeShape: QrEyeShape.square,
+                            color: Color(0xFF0F172A),
+                          ),
+                          dataModuleStyle: const QrDataModuleStyle(
+                            dataModuleShape: QrDataModuleShape.square,
+                            color: Color(0xFF0F172A),
+                          ),
                         ),
                       ),
                       const SizedBox(height: 12),
 
                       // Meal Type
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 6,
+                        ),
                         decoration: BoxDecoration(
                           color: AppColors.accent.withValues(alpha: 0.15),
                           borderRadius: BorderRadius.circular(20),
                         ),
-                        child: Text(_getMealType(), style: AppTextStyles.labelLarge.copyWith(color: AppColors.accent)),
+                        child: Text(
+                          _getMealType(),
+                          style: AppTextStyles.labelLarge.copyWith(
+                            color: AppColors.accentLight,
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -194,8 +201,12 @@ class _QrPassScreenState extends State<QrPassScreen> with TickerProviderStateMix
                 builder: (context, _) {
                   final isUrgent = _secondsLeft <= 5;
                   final color = isUrgent ? AppColors.error : AppColors.accent;
-                  return GlassCard(
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  return NeumorphicSection(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 12,
+                    ),
+                    borderRadius: 16,
                     borderColor: color.withValues(alpha: 0.2),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -215,23 +226,32 @@ class _QrPassScreenState extends State<QrPassScreen> with TickerProviderStateMix
                 },
               ),
               const SizedBox(height: 8),
-              Text('QR auto-refreshes to prevent screenshots', style: AppTextStyles.bodySmall),
+              Text(
+                'QR auto-refreshes to prevent screenshots',
+                style: AppTextStyles.bodySmall,
+              ),
 
               const Spacer(),
 
               // Security Note
               Padding(
                 padding: const EdgeInsets.all(20),
-                child: GlassCard(
+                child: NeumorphicSection(
                   padding: const EdgeInsets.all(12),
                   child: Row(
                     children: [
-                      const Icon(Icons.shield_rounded, color: AppColors.info, size: 20),
+                      const Icon(
+                        Icons.shield_rounded,
+                        color: AppColors.info,
+                        size: 20,
+                      ),
                       const SizedBox(width: 10),
                       Expanded(
                         child: Text(
                           'This pass is linked to your identity. Sharing is not allowed.',
-                          style: AppTextStyles.bodySmall.copyWith(color: AppColors.info),
+                          style: AppTextStyles.bodySmall.copyWith(
+                            color: AppColors.info,
+                          ),
                         ),
                       ),
                     ],

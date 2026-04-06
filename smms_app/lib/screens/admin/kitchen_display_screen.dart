@@ -11,13 +11,17 @@ class KitchenDisplayScreen extends StatefulWidget {
   State<KitchenDisplayScreen> createState() => _KitchenDisplayScreenState();
 }
 
-class _KitchenDisplayScreenState extends State<KitchenDisplayScreen> with SingleTickerProviderStateMixin {
+class _KitchenDisplayScreenState extends State<KitchenDisplayScreen>
+    with SingleTickerProviderStateMixin {
   late AnimationController _pulseController;
 
   @override
   void initState() {
     super.initState();
-    _pulseController = AnimationController(vsync: this, duration: const Duration(milliseconds: 1000))..repeat(reverse: true);
+    _pulseController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1000),
+    )..repeat(reverse: true);
   }
 
   @override
@@ -28,9 +32,12 @@ class _KitchenDisplayScreenState extends State<KitchenDisplayScreen> with Single
 
   Color _statusColor(String status) {
     switch (status) {
-      case 'urgent': return AppColors.warning;
-      case 'critical': return AppColors.error;
-      default: return AppColors.accent;
+      case 'urgent':
+        return AppColors.warning;
+      case 'critical':
+        return AppColors.error;
+      default:
+        return AppColors.accent;
     }
   }
 
@@ -43,9 +50,9 @@ class _KitchenDisplayScreenState extends State<KitchenDisplayScreen> with Single
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFF0A0E1A), Color(0xFF0F172A)],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+            colors: [Color(0xFF0F1724), Color(0xFF111B2D), Color(0xFF0F1724)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
         ),
         child: SafeArea(
@@ -57,13 +64,22 @@ class _KitchenDisplayScreenState extends State<KitchenDisplayScreen> with Single
                 padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
                 child: Row(
                   children: [
-                    const Icon(Icons.kitchen_rounded, color: AppColors.accent, size: 24),
+                    const NeuIconTile(
+                      icon: Icons.kitchen_rounded,
+                      iconColor: AppColors.accentLight,
+                      padding: EdgeInsets.all(8),
+                    ),
                     const SizedBox(width: 10),
-                    Text('Kitchen Display', style: AppTextStyles.headlineLarge),
+                    Expanded(
+                      child: Text(
+                        'Kitchen Display',
+                        style: AppTextStyles.headlineLarge,
+                      ),
+                    ),
                     const Spacer(),
-                    const PulsingDot(color: AppColors.accent, size: 8),
-                    const SizedBox(width: 6),
-                    Text('LIVE', style: AppTextStyles.labelSmall.copyWith(color: AppColors.accent, fontWeight: FontWeight.w700)),
+                    const NeuPill(label: 'LIVE'),
+                    const SizedBox(width: 8),
+                    const PulsingDot(color: AppColors.accentLight, size: 8),
                   ],
                 ),
               ),
@@ -72,26 +88,34 @@ class _KitchenDisplayScreenState extends State<KitchenDisplayScreen> with Single
               // Scan Rate Banner
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: GlassCard(
+                child: NeumorphicSection(
                   padding: const EdgeInsets.all(12),
                   borderColor: AppColors.info.withValues(alpha: 0.2),
                   child: Row(
                     children: [
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: AppColors.info.withValues(alpha: 0.12),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: const Icon(Icons.speed_rounded, color: AppColors.info, size: 20),
+                      const NeuIconTile(
+                        icon: Icons.speed_rounded,
+                        iconColor: AppColors.info,
+                        padding: EdgeInsets.all(8),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Current scan rate: 12 students/min', style: AppTextStyles.labelLarge.copyWith(color: AppColors.info, fontSize: 12)),
-                            Text('$headcount scanned so far', style: AppTextStyles.bodySmall.copyWith(fontSize: 10)),
+                            Text(
+                              'Current scan rate: 12 students/min',
+                              style: AppTextStyles.labelLarge.copyWith(
+                                color: AppColors.info,
+                                fontSize: 12,
+                              ),
+                            ),
+                            Text(
+                              '$headcount scanned so far',
+                              style: AppTextStyles.bodySmall.copyWith(
+                                fontSize: 10,
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -121,54 +145,88 @@ class _KitchenDisplayScreenState extends State<KitchenDisplayScreen> with Single
                       builder: (context, child) {
                         return Container(
                           margin: const EdgeInsets.only(bottom: 10),
-                          child: GlassCard(
+                          child: NeumorphicSection(
                             padding: const EdgeInsets.all(14),
                             borderColor: isCritical
-                                ? AppColors.error.withValues(alpha: 0.2 + _pulseController.value * 0.3)
+                                ? AppColors.error.withValues(
+                                    alpha: 0.2 + _pulseController.value * 0.3,
+                                  )
                                 : color.withValues(alpha: 0.1),
                             child: Row(
                               children: [
                                 // Emoji
                                 Container(
-                                  width: 48, height: 48,
+                                  width: 48,
+                                  height: 48,
                                   decoration: BoxDecoration(
-                                    color: color.withValues(alpha: 0.1),
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        color.withValues(alpha: 0.18),
+                                        AppColors.surface,
+                                      ],
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                    ),
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: Center(
-                                    child: Text(item['emoji'] as String, style: const TextStyle(fontSize: 26)),
+                                    child: Text(
+                                      item['emoji'] as String,
+                                      style: const TextStyle(fontSize: 26),
+                                    ),
                                   ),
                                 ),
                                 const SizedBox(width: 14),
                                 // Info
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      Text(item['item'] as String, style: AppTextStyles.titleMedium),
+                                      Text(
+                                        item['item'] as String,
+                                        style: AppTextStyles.titleMedium,
+                                      ),
                                       const SizedBox(height: 2),
                                       Text(
                                         '~${item['remaining']} servings left',
-                                        style: AppTextStyles.bodySmall.copyWith(fontSize: 11),
+                                        style: AppTextStyles.bodySmall.copyWith(
+                                          fontSize: 11,
+                                        ),
                                       ),
                                     ],
                                   ),
                                 ),
                                 // Refill Timer
                                 Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 8,
+                                  ),
                                   decoration: BoxDecoration(
                                     color: color.withValues(alpha: 0.12),
                                     borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(color: color.withValues(alpha: 0.2)),
+                                    border: Border.all(
+                                      color: color.withValues(alpha: 0.2),
+                                    ),
                                   ),
                                   child: Column(
                                     children: [
                                       Text(
                                         '${refillMin}m',
-                                        style: AppTextStyles.statNumber.copyWith(color: color, fontSize: 20),
+                                        style: AppTextStyles.statNumber
+                                            .copyWith(
+                                              color: color,
+                                              fontSize: 20,
+                                            ),
                                       ),
-                                      Text('refill', style: AppTextStyles.bodySmall.copyWith(fontSize: 9, color: color)),
+                                      Text(
+                                        'refill',
+                                        style: AppTextStyles.bodySmall.copyWith(
+                                          fontSize: 9,
+                                          color: color,
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 ),

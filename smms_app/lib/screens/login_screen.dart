@@ -35,30 +35,51 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFF0A0E1A), Color(0xFF0F172A), Color(0xFF0A0E1A)],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+            colors: [Color(0xFF0F1724), Color(0xFF111B2D), Color(0xFF0F1724)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
         ),
         child: SafeArea(
-          child: FadeTransition(
-            opacity: _fadeAnimation,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 28),
-              child: Column(
+          child: Stack(
+            children: [
+              Positioned(
+                top: -40,
+                left: -30,
+                child: _GlowBlob(color: AppColors.accent.withValues(alpha: 0.12), size: 180),
+              ),
+              Positioned(
+                bottom: -30,
+                right: -20,
+                child: _GlowBlob(color: AppColors.info.withValues(alpha: 0.10), size: 160),
+              ),
+              FadeTransition(
+                opacity: _fadeAnimation,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 560),
+                      child: Column(
                 children: [
                   const Spacer(flex: 2),
                   // Logo & Branding
                   Container(
-                    width: 90, height: 90,
+                    width: 94, height: 94,
                     decoration: BoxDecoration(
-                      gradient: AppColors.accentGradient,
-                      borderRadius: BorderRadius.circular(24),
+                      gradient: const LinearGradient(
+                        colors: [AppColors.surfaceRaised, AppColors.surface],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.circular(28),
+                      border: Border.all(color: AppColors.accent.withValues(alpha: 0.18)),
                       boxShadow: [
-                        BoxShadow(color: AppColors.accent.withValues(alpha: 0.4), blurRadius: 30, offset: const Offset(0, 10)),
+                        BoxShadow(color: AppColors.shadowLight, blurRadius: 18, offset: const Offset(-8, -8), spreadRadius: -4),
+                        BoxShadow(color: AppColors.shadowDark, blurRadius: 18, offset: const Offset(8, 8), spreadRadius: -4),
                       ],
                     ),
-                    child: const Icon(Icons.restaurant_menu_rounded, size: 44, color: Colors.white),
+                    child: const Icon(Icons.restaurant_menu_rounded, size: 44, color: AppColors.accentLight),
                   ),
                   const SizedBox(height: 24),
                   Text('SMMS', style: AppTextStyles.displayLarge.copyWith(letterSpacing: 4)),
@@ -69,7 +90,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                   // Role Toggle
                   GlassCard(
                     padding: const EdgeInsets.all(4),
-                    borderRadius: 16,
+                    borderRadius: 24,
                     child: Row(
                       children: [
                         _roleTab('Student', Icons.school_rounded, _isStudent, () => setState(() => _isStudent = true)),
@@ -110,22 +131,16 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                   SizedBox(
                     width: double.infinity,
                     height: 52,
-                    child: ElevatedButton(
-                      onPressed: () {
+                    child: _PrimaryNeuButton(
+                      label: _isStudent ? 'Login as Student' : 'Login as Admin',
+                      icon: Icons.arrow_forward_rounded,
+                      onTap: () {
                         if (_isStudent) {
                           Navigator.pushReplacementNamed(context, '/student');
                         } else {
                           Navigator.pushReplacementNamed(context, '/admin');
                         }
                       },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(_isStudent ? 'Login as Student' : 'Login as Admin'),
-                          const SizedBox(width: 8),
-                          const Icon(Icons.arrow_forward_rounded, size: 20),
-                        ],
-                      ),
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -133,32 +148,25 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                   SizedBox(
                     width: double.infinity,
                     height: 48,
-                    child: OutlinedButton(
-                      onPressed: () {
+                    child: _SecondaryNeuButton(
+                      label: 'Sign in with University SSO',
+                      icon: Icons.login_rounded,
+                      onTap: () {
                         if (_isStudent) {
                           Navigator.pushReplacementNamed(context, '/student');
                         } else {
                           Navigator.pushReplacementNamed(context, '/admin');
                         }
                       },
-                      style: OutlinedButton.styleFrom(
-                        side: BorderSide(color: Colors.white.withValues(alpha: 0.1)),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(Icons.login_rounded, size: 18, color: AppColors.textSecondary),
-                          const SizedBox(width: 8),
-                          Text('Sign in with University SSO', style: AppTextStyles.bodyMedium),
-                        ],
-                      ),
                     ),
                   ),
                   const Spacer(flex: 2),
-                ],
+                      ],
+                    ),
+                  ),
+                ),
               ),
-            ),
+            ],
           ),
         ),
       ),
@@ -171,15 +179,21 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
         onTap: onTap,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 250),
-          padding: const EdgeInsets.symmetric(vertical: 12),
+          padding: const EdgeInsets.symmetric(vertical: 14),
           decoration: BoxDecoration(
-            color: isActive ? AppColors.accent : Colors.transparent,
-            borderRadius: BorderRadius.circular(12),
+            color: isActive ? AppColors.surfaceRaised : Colors.transparent,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: isActive
+                ? [
+                    BoxShadow(color: AppColors.shadowLight, blurRadius: 10, offset: const Offset(-4, -4), spreadRadius: -3),
+                    BoxShadow(color: AppColors.shadowDark, blurRadius: 10, offset: const Offset(4, 4), spreadRadius: -3),
+                  ]
+                : [],
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(icon, size: 18, color: isActive ? Colors.white : AppColors.textMuted),
+              Icon(icon, size: 18, color: isActive ? AppColors.accentLight : AppColors.textMuted),
               const SizedBox(width: 6),
               Text(
                 label,
@@ -190,6 +204,80 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _PrimaryNeuButton extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final VoidCallback onTap;
+
+  const _PrimaryNeuButton({required this.label, required this.icon, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [AppColors.surfaceRaised, AppColors.surface],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(color: AppColors.accent.withValues(alpha: 0.28)),
+          boxShadow: [
+            BoxShadow(color: AppColors.shadowLight, blurRadius: 16, offset: const Offset(-7, -7), spreadRadius: -3),
+            BoxShadow(color: AppColors.shadowDark, blurRadius: 16, offset: const Offset(7, 7), spreadRadius: -3),
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(label, style: AppTextStyles.labelLarge.copyWith(color: Colors.white)),
+            const SizedBox(width: 8),
+            Icon(icon, size: 20, color: AppColors.accentLight),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _SecondaryNeuButton extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final VoidCallback onTap;
+
+  const _SecondaryNeuButton({required this.label, required this.icon, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: AppColors.surfacePressed,
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+          boxShadow: [
+            BoxShadow(color: AppColors.shadowLight, blurRadius: 12, offset: const Offset(-5, -5), spreadRadius: -3),
+            BoxShadow(color: AppColors.shadowDark, blurRadius: 12, offset: const Offset(5, 5), spreadRadius: -3),
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 18, color: AppColors.accentLight),
+            const SizedBox(width: 8),
+            Text(label, style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textPrimary)),
+          ],
         ),
       ),
     );

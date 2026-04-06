@@ -11,7 +11,8 @@ class QrScannerScreen extends StatefulWidget {
   State<QrScannerScreen> createState() => _QrScannerScreenState();
 }
 
-class _QrScannerScreenState extends State<QrScannerScreen> with SingleTickerProviderStateMixin {
+class _QrScannerScreenState extends State<QrScannerScreen>
+    with SingleTickerProviderStateMixin {
   String _scanStatus = 'idle'; // idle, valid, invalid, duplicate
   String _scannedName = '';
   String _scannedRoll = '';
@@ -20,7 +21,10 @@ class _QrScannerScreenState extends State<QrScannerScreen> with SingleTickerProv
   @override
   void initState() {
     super.initState();
-    _flashController = AnimationController(vsync: this, duration: const Duration(milliseconds: 400));
+    _flashController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 400),
+    );
   }
 
   @override
@@ -45,28 +49,40 @@ class _QrScannerScreenState extends State<QrScannerScreen> with SingleTickerProv
 
   Color get _scanColor {
     switch (_scanStatus) {
-      case 'valid': return AppColors.accent;
-      case 'invalid': return AppColors.error;
-      case 'duplicate': return AppColors.warning;
-      default: return AppColors.info;
+      case 'valid':
+        return AppColors.accent;
+      case 'invalid':
+        return AppColors.error;
+      case 'duplicate':
+        return AppColors.warning;
+      default:
+        return AppColors.info;
     }
   }
 
   IconData get _scanIcon {
     switch (_scanStatus) {
-      case 'valid': return Icons.check_circle_rounded;
-      case 'invalid': return Icons.cancel_rounded;
-      case 'duplicate': return Icons.warning_amber_rounded;
-      default: return Icons.qr_code_scanner_rounded;
+      case 'valid':
+        return Icons.check_circle_rounded;
+      case 'invalid':
+        return Icons.cancel_rounded;
+      case 'duplicate':
+        return Icons.warning_amber_rounded;
+      default:
+        return Icons.qr_code_scanner_rounded;
     }
   }
 
   String get _scanMessage {
     switch (_scanStatus) {
-      case 'valid': return 'Entry Approved';
-      case 'invalid': return 'Invalid / Already Scanned';
-      case 'duplicate': return 'Guest Pass';
-      default: return 'Ready to Scan';
+      case 'valid':
+        return 'Entry Approved';
+      case 'invalid':
+        return 'Invalid / Already Scanned';
+      case 'duplicate':
+        return 'Guest Pass';
+      default:
+        return 'Ready to Scan';
     }
   }
 
@@ -76,9 +92,9 @@ class _QrScannerScreenState extends State<QrScannerScreen> with SingleTickerProv
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFF0A0E1A), Color(0xFF0F172A)],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+            colors: [Color(0xFF0F1724), Color(0xFF111B2D), Color(0xFF0F1724)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
         ),
         child: SafeArea(
@@ -89,11 +105,23 @@ class _QrScannerScreenState extends State<QrScannerScreen> with SingleTickerProv
                 padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
                 child: Row(
                   children: [
-                    Text('QR Scanner', style: AppTextStyles.headlineLarge),
+                    Expanded(
+                      child: Text(
+                        'QR Scanner',
+                        style: AppTextStyles.headlineLarge,
+                      ),
+                    ),
                     const Spacer(),
-                    const PulsingDot(color: AppColors.accent),
+                    const NeuPill(label: 'Camera'),
+                    const SizedBox(width: 8),
+                    const PulsingDot(color: AppColors.accentLight, size: 6),
                     const SizedBox(width: 6),
-                    Text('Camera Active', style: AppTextStyles.bodySmall.copyWith(color: AppColors.accent)),
+                    Text(
+                      'Camera Active',
+                      style: AppTextStyles.bodySmall.copyWith(
+                        color: AppColors.accentLight,
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -103,21 +131,12 @@ class _QrScannerScreenState extends State<QrScannerScreen> with SingleTickerProv
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 300),
-                    decoration: BoxDecoration(
-                      color: AppColors.surfaceLight,
-                      borderRadius: BorderRadius.circular(24),
-                      border: Border.all(
-                        color: _scanStatus == 'idle'
-                            ? Colors.white.withValues(alpha: 0.06)
-                            : _scanColor.withValues(alpha: 0.5),
-                        width: _scanStatus == 'idle' ? 1 : 3,
-                      ),
-                      boxShadow: _scanStatus != 'idle'
-                          ? [BoxShadow(color: _scanColor.withValues(alpha: 0.2), blurRadius: 30)]
-                          : null,
-                    ),
+                  child: NeumorphicSection(
+                    padding: const EdgeInsets.all(4),
+                    borderRadius: 26,
+                    borderColor: _scanStatus == 'idle'
+                        ? Colors.white.withValues(alpha: 0.04)
+                        : _scanColor.withValues(alpha: 0.35),
                     child: Stack(
                       alignment: Alignment.center,
                       children: [
@@ -125,46 +144,80 @@ class _QrScannerScreenState extends State<QrScannerScreen> with SingleTickerProv
                         Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.camera_alt_rounded, size: 48, color: AppColors.textMuted.withValues(alpha: 0.3)),
+                            Icon(
+                              Icons.camera_alt_rounded,
+                              size: 48,
+                              color: AppColors.textMuted.withValues(alpha: 0.3),
+                            ),
                             const SizedBox(height: 8),
-                            Text('Camera Preview', style: AppTextStyles.bodySmall.copyWith(color: AppColors.textMuted)),
+                            Text(
+                              'Camera Preview',
+                              style: AppTextStyles.bodySmall.copyWith(
+                                color: AppColors.textMuted,
+                              ),
+                            ),
                             const SizedBox(height: 4),
-                            Text('(Requires device camera)', style: AppTextStyles.bodySmall.copyWith(fontSize: 10)),
+                            Text(
+                              '(Requires device camera)',
+                              style: AppTextStyles.bodySmall.copyWith(
+                                fontSize: 10,
+                              ),
+                            ),
                           ],
                         ),
 
                         // Scan crosshair overlay
                         if (_scanStatus == 'idle')
                           Container(
-                            width: 200, height: 200,
+                            width: 200,
+                            height: 200,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20),
-                              border: Border.all(color: AppColors.accent.withValues(alpha: 0.4), width: 2),
+                              border: Border.all(
+                                color: AppColors.accent.withValues(alpha: 0.4),
+                                width: 2,
+                              ),
                             ),
                           ),
 
                         // Result overlay
                         if (_scanStatus != 'idle')
                           FadeTransition(
-                            opacity: CurvedAnimation(parent: _flashController, curve: Curves.easeOut),
+                            opacity: CurvedAnimation(
+                              parent: _flashController,
+                              curve: Curves.easeOut,
+                            ),
                             child: Container(
                               margin: const EdgeInsets.all(40),
                               padding: const EdgeInsets.all(24),
                               decoration: BoxDecoration(
                                 color: _scanColor.withValues(alpha: 0.15),
                                 borderRadius: BorderRadius.circular(20),
-                                border: Border.all(color: _scanColor.withValues(alpha: 0.3)),
+                                border: Border.all(
+                                  color: _scanColor.withValues(alpha: 0.3),
+                                ),
                               ),
                               child: Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Icon(_scanIcon, color: _scanColor, size: 64),
                                   const SizedBox(height: 12),
-                                  Text(_scanMessage, style: AppTextStyles.titleLarge.copyWith(color: _scanColor)),
+                                  Text(
+                                    _scanMessage,
+                                    style: AppTextStyles.titleLarge.copyWith(
+                                      color: _scanColor,
+                                    ),
+                                  ),
                                   if (_scanStatus == 'valid') ...[
                                     const SizedBox(height: 8),
-                                    Text(_scannedName, style: AppTextStyles.headlineMedium),
-                                    Text(_scannedRoll, style: AppTextStyles.bodyMedium),
+                                    Text(
+                                      _scannedName,
+                                      style: AppTextStyles.headlineMedium,
+                                    ),
+                                    Text(
+                                      _scannedRoll,
+                                      style: AppTextStyles.bodyMedium,
+                                    ),
                                   ],
                                 ],
                               ),
@@ -180,26 +233,38 @@ class _QrScannerScreenState extends State<QrScannerScreen> with SingleTickerProv
               // Simulate Buttons (for demo)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: GlassCard(
+                child: NeumorphicSection(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Demo Controls', style: AppTextStyles.labelSmall.copyWith(color: AppColors.textMuted)),
+                      Text(
+                        'Demo Controls',
+                        style: AppTextStyles.labelSmall.copyWith(
+                          color: AppColors.textMuted,
+                        ),
+                      ),
                       const SizedBox(height: 10),
                       Row(
                         children: [
                           Expanded(
                             child: GestureDetector(
                               onTap: () => _simulateScan(true),
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(vertical: 12),
-                                decoration: BoxDecoration(
-                                  color: AppColors.accent.withValues(alpha: 0.15),
-                                  borderRadius: BorderRadius.circular(12),
-                                  border: Border.all(color: AppColors.accent.withValues(alpha: 0.3)),
+                              child: NeumorphicSection(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 12,
+                                ),
+                                borderRadius: 12,
+                                borderColor: AppColors.accent.withValues(
+                                  alpha: 0.18,
                                 ),
                                 child: Center(
-                                  child: Text('✅ Valid Scan', style: AppTextStyles.labelLarge.copyWith(color: AppColors.accent, fontSize: 12)),
+                                  child: Text(
+                                    '✅ Valid Scan',
+                                    style: AppTextStyles.labelLarge.copyWith(
+                                      color: AppColors.accentLight,
+                                      fontSize: 12,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
@@ -208,15 +273,22 @@ class _QrScannerScreenState extends State<QrScannerScreen> with SingleTickerProv
                           Expanded(
                             child: GestureDetector(
                               onTap: () => _simulateScan(false),
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(vertical: 12),
-                                decoration: BoxDecoration(
-                                  color: AppColors.error.withValues(alpha: 0.15),
-                                  borderRadius: BorderRadius.circular(12),
-                                  border: Border.all(color: AppColors.error.withValues(alpha: 0.3)),
+                              child: NeumorphicSection(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 12,
+                                ),
+                                borderRadius: 12,
+                                borderColor: AppColors.error.withValues(
+                                  alpha: 0.18,
                                 ),
                                 child: Center(
-                                  child: Text('❌ Invalid Scan', style: AppTextStyles.labelLarge.copyWith(color: AppColors.error, fontSize: 12)),
+                                  child: Text(
+                                    '❌ Invalid Scan',
+                                    style: AppTextStyles.labelLarge.copyWith(
+                                      color: AppColors.error,
+                                      fontSize: 12,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),

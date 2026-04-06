@@ -13,7 +13,13 @@ class MenuManagementScreen extends StatefulWidget {
 
 class _MenuManagementScreenState extends State<MenuManagementScreen> {
   String _selectedDay = 'Monday';
-  final List<String> _days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+  final List<String> _days = [
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -26,9 +32,9 @@ class _MenuManagementScreenState extends State<MenuManagementScreen> {
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFF0A0E1A), Color(0xFF0F172A)],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+            colors: [Color(0xFF0F1724), Color(0xFF111B2D), Color(0xFF0F1724)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
         ),
         child: SafeArea(
@@ -37,12 +43,25 @@ class _MenuManagementScreenState extends State<MenuManagementScreen> {
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
-                child: Text('Menu Planner', style: AppTextStyles.headlineLarge),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        'Menu Planner',
+                        style: AppTextStyles.headlineLarge,
+                      ),
+                    ),
+                    const NeuPill(label: 'Weekly Plan'),
+                  ],
+                ),
               ),
               const SizedBox(height: 4),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Text('Drag dishes from the recipe bank to plan the week', style: AppTextStyles.bodySmall),
+                child: Text(
+                  'Drag dishes from the recipe bank to plan the week',
+                  style: AppTextStyles.bodySmall,
+                ),
               ),
               const SizedBox(height: 16),
 
@@ -60,19 +79,46 @@ class _MenuManagementScreenState extends State<MenuManagementScreen> {
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 200),
                         margin: const EdgeInsets.only(right: 8),
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
                         decoration: BoxDecoration(
-                          gradient: isSelected ? AppColors.accentGradient : null,
-                          color: isSelected ? null : AppColors.surfaceLight,
+                          gradient: isSelected
+                              ? const LinearGradient(
+                                  colors: [
+                                    AppColors.surfaceRaised,
+                                    AppColors.surface,
+                                  ],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                )
+                              : null,
+                          color: isSelected ? null : AppColors.surface,
                           borderRadius: BorderRadius.circular(18),
-                          boxShadow: isSelected ? [
-                            BoxShadow(color: AppColors.accent.withValues(alpha: 0.3), blurRadius: 10)
-                          ] : null,
+                          boxShadow: isSelected
+                              ? [
+                                  BoxShadow(
+                                    color: AppColors.shadowLight,
+                                    blurRadius: 10,
+                                    offset: const Offset(-4, -4),
+                                    spreadRadius: -3,
+                                  ),
+                                  BoxShadow(
+                                    color: AppColors.shadowDark,
+                                    blurRadius: 10,
+                                    offset: const Offset(4, 4),
+                                    spreadRadius: -3,
+                                  ),
+                                ]
+                              : null,
                         ),
                         child: Text(
                           _days[index].substring(0, 3),
                           style: AppTextStyles.labelLarge.copyWith(
-                            color: isSelected ? Colors.white : AppColors.textMuted,
+                            color: isSelected
+                                ? Colors.white
+                                : AppColors.textMuted,
                             fontSize: 12,
                           ),
                         ),
@@ -92,51 +138,92 @@ class _MenuManagementScreenState extends State<MenuManagementScreen> {
                       // Current Day Menu
                       const SectionHeader(title: 'Planned Menu'),
                       const SizedBox(height: 4),
-                      ...dayItems.map((item) => Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
-                        child: GlassCard(
-                          padding: const EdgeInsets.all(12),
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 40, height: 40,
-                                decoration: BoxDecoration(
-                                  color: AppColors.surfaceLight,
-                                  borderRadius: BorderRadius.circular(10),
+                      ...dayItems.map(
+                        (item) => Padding(
+                          padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
+                          child: NeumorphicSection(
+                            padding: const EdgeInsets.all(12),
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 40,
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                    gradient: const LinearGradient(
+                                      colors: [
+                                        AppColors.surfaceRaised,
+                                        AppColors.surface,
+                                      ],
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                    ),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      item.imageEmoji,
+                                      style: const TextStyle(fontSize: 22),
+                                    ),
+                                  ),
                                 ),
-                                child: Center(child: Text(item.imageEmoji, style: const TextStyle(fontSize: 22))),
-                              ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(item.name, style: AppTextStyles.titleMedium.copyWith(fontSize: 14)),
-                                    Text(item.category.toUpperCase(), style: AppTextStyles.labelSmall.copyWith(color: AppColors.accent, fontSize: 9)),
-                                  ],
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        item.name,
+                                        style: AppTextStyles.titleMedium
+                                            .copyWith(fontSize: 14),
+                                      ),
+                                      Text(
+                                        item.category.toUpperCase(),
+                                        style: AppTextStyles.labelSmall
+                                            .copyWith(
+                                              color: AppColors.accent,
+                                              fontSize: 9,
+                                            ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              const Icon(Icons.drag_indicator_rounded, color: AppColors.textMuted, size: 18),
-                            ],
+                                const Icon(
+                                  Icons.drag_indicator_rounded,
+                                  color: AppColors.textMuted,
+                                  size: 18,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      )),
+                      ),
 
                       const SizedBox(height: 16),
 
                       // Nutritional Balance Widget
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: GlassCard(
+                        child: NeumorphicSection(
                           borderColor: AppColors.info.withValues(alpha: 0.2),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
                                 children: [
-                                  const Icon(Icons.balance_rounded, color: AppColors.info, size: 18),
+                                  const Icon(
+                                    Icons.balance_rounded,
+                                    color: AppColors.info,
+                                    size: 18,
+                                  ),
                                   const SizedBox(width: 8),
-                                  Text('Weekly Nutritional Balance', style: AppTextStyles.labelLarge.copyWith(color: AppColors.info, fontSize: 13)),
+                                  Text(
+                                    'Weekly Nutritional Balance',
+                                    style: AppTextStyles.labelLarge.copyWith(
+                                      color: AppColors.info,
+                                      fontSize: 13,
+                                    ),
+                                  ),
                                 ],
                               ),
                               const SizedBox(height: 12),
@@ -144,12 +231,20 @@ class _MenuManagementScreenState extends State<MenuManagementScreen> {
                               const SizedBox(height: 8),
                               _nutritionBar('Carbs', 0.85, AppColors.warning),
                               const SizedBox(height: 8),
-                              _nutritionBar('Fats', 0.55, AppColors.accentLight),
+                              _nutritionBar(
+                                'Fats',
+                                0.55,
+                                AppColors.accentLight,
+                              ),
                               const SizedBox(height: 8),
                               _nutritionBar('Fiber', 0.35, AppColors.accent),
                               const SizedBox(height: 8),
-                              Text('⚠️ Consider adding more fiber-rich items this week',
-                                style: AppTextStyles.bodySmall.copyWith(color: AppColors.warning, fontSize: 11),
+                              Text(
+                                '⚠️ Consider adding more fiber-rich items this week',
+                                style: AppTextStyles.bodySmall.copyWith(
+                                  color: AppColors.warning,
+                                  fontSize: 11,
+                                ),
                               ),
                             ],
                           ),
@@ -160,39 +255,72 @@ class _MenuManagementScreenState extends State<MenuManagementScreen> {
                       // Ingredient Fatigue Alerts
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: GlassCard(
+                        child: NeumorphicSection(
                           borderColor: AppColors.warning.withValues(alpha: 0.2),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
                                 children: [
-                                  const Icon(Icons.repeat_rounded, color: AppColors.warning, size: 18),
+                                  const Icon(
+                                    Icons.repeat_rounded,
+                                    color: AppColors.warning,
+                                    size: 18,
+                                  ),
                                   const SizedBox(width: 8),
-                                  Text('Ingredient Fatigue', style: AppTextStyles.labelLarge.copyWith(color: AppColors.warning, fontSize: 13)),
+                                  Text(
+                                    'Ingredient Fatigue',
+                                    style: AppTextStyles.labelLarge.copyWith(
+                                      color: AppColors.warning,
+                                      fontSize: 13,
+                                    ),
+                                  ),
                                 ],
                               ),
                               const SizedBox(height: 10),
-                              ...fatigueData.map((f) => Container(
-                                margin: const EdgeInsets.only(bottom: 8),
-                                padding: const EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                  color: AppColors.warning.withValues(alpha: 0.06),
-                                  borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(color: AppColors.warning.withValues(alpha: 0.1)),
-                                ),
-                                child: Row(
-                                  children: [
-                                    Text('${f['ingredient']}', style: AppTextStyles.labelLarge.copyWith(fontSize: 12)),
-                                    const SizedBox(width: 6),
-                                    Text('(${f['usedInDays']}/${f['outOf']} days)', style: AppTextStyles.bodySmall.copyWith(color: AppColors.warning, fontSize: 10)),
-                                    const Spacer(),
-                                    Flexible(
-                                      child: Text('→ ${f['suggestion']}', style: AppTextStyles.bodySmall.copyWith(fontSize: 10), textAlign: TextAlign.right),
+                              ...fatigueData.map(
+                                (f) => Container(
+                                  margin: const EdgeInsets.only(bottom: 8),
+                                  padding: const EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.warning.withValues(
+                                      alpha: 0.06,
                                     ),
-                                  ],
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(
+                                      color: AppColors.warning.withValues(
+                                        alpha: 0.1,
+                                      ),
+                                    ),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        '${f['ingredient']}',
+                                        style: AppTextStyles.labelLarge
+                                            .copyWith(fontSize: 12),
+                                      ),
+                                      const SizedBox(width: 6),
+                                      Text(
+                                        '(${f['usedInDays']}/${f['outOf']} days)',
+                                        style: AppTextStyles.bodySmall.copyWith(
+                                          color: AppColors.warning,
+                                          fontSize: 10,
+                                        ),
+                                      ),
+                                      const Spacer(),
+                                      Flexible(
+                                        child: Text(
+                                          '→ ${f['suggestion']}',
+                                          style: AppTextStyles.bodySmall
+                                              .copyWith(fontSize: 10),
+                                          textAlign: TextAlign.right,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              )),
+                              ),
                             ],
                           ),
                         ),
@@ -213,16 +341,32 @@ class _MenuManagementScreenState extends State<MenuManagementScreen> {
                             return Container(
                               width: 110,
                               margin: const EdgeInsets.symmetric(horizontal: 4),
-                              child: GlassCard(
+                              child: NeumorphicSection(
                                 padding: const EdgeInsets.all(10),
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Text(r.imageEmoji, style: const TextStyle(fontSize: 28)),
+                                    Text(
+                                      r.imageEmoji,
+                                      style: const TextStyle(fontSize: 28),
+                                    ),
                                     const SizedBox(height: 6),
-                                    Text(r.name, style: AppTextStyles.labelSmall.copyWith(color: AppColors.textPrimary, fontSize: 10), textAlign: TextAlign.center, maxLines: 2),
+                                    Text(
+                                      r.name,
+                                      style: AppTextStyles.labelSmall.copyWith(
+                                        color: AppColors.textPrimary,
+                                        fontSize: 10,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                      maxLines: 2,
+                                    ),
                                     const SizedBox(height: 4),
-                                    Text('${r.calories} kcal', style: AppTextStyles.bodySmall.copyWith(fontSize: 9)),
+                                    Text(
+                                      '${r.calories} kcal',
+                                      style: AppTextStyles.bodySmall.copyWith(
+                                        fontSize: 9,
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),
@@ -245,7 +389,13 @@ class _MenuManagementScreenState extends State<MenuManagementScreen> {
   Widget _nutritionBar(String label, double value, Color color) {
     return Row(
       children: [
-        SizedBox(width: 50, child: Text(label, style: AppTextStyles.bodySmall.copyWith(fontSize: 11))),
+        SizedBox(
+          width: 50,
+          child: Text(
+            label,
+            style: AppTextStyles.bodySmall.copyWith(fontSize: 11),
+          ),
+        ),
         const SizedBox(width: 8),
         Expanded(
           child: ClipRRect(
@@ -259,7 +409,10 @@ class _MenuManagementScreenState extends State<MenuManagementScreen> {
           ),
         ),
         const SizedBox(width: 8),
-        Text('${(value * 100).toInt()}%', style: AppTextStyles.labelSmall.copyWith(color: color, fontSize: 10)),
+        Text(
+          '${(value * 100).toInt()}%',
+          style: AppTextStyles.labelSmall.copyWith(color: color, fontSize: 10),
+        ),
       ],
     );
   }

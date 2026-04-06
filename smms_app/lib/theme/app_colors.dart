@@ -2,26 +2,32 @@ import 'package:flutter/material.dart';
 
 class AppColors {
   // Primary Brand Colors
-  static const Color primary = Color(0xFF0F172A);       // Deep Slate Blue
-  static const Color primaryLight = Color(0xFF1E293B);   // Lighter Slate
-  static const Color primaryDark = Color(0xFF020617);    // Darkest Slate
+  static const Color primary = Color(0xFF111827);       // Deep Slate Blue
+  static const Color primaryLight = Color(0xFF1F2937);   // Lighter Slate
+  static const Color primaryDark = Color(0xFF0B1220);    // Darkest Slate
 
   // Accent / Success
-  static const Color accent = Color(0xFF22C55E);         // Vibrant Green
-  static const Color accentLight = Color(0xFF4ADE80);    // Light Green
-  static const Color accentDark = Color(0xFF16A34A);     // Dark Green
-  static const Color accentGlow = Color(0x3322C55E);     // Green glow overlay
+  static const Color accent = Color(0xFF4FD1C5);         // Soft teal accent
+  static const Color accentLight = Color(0xFF7EE8D8);    // Light teal
+  static const Color accentDark = Color(0xFF2EB6A8);     // Dark teal
+  static const Color accentGlow = Color(0x334FD1C5);     // Accent glow overlay
 
   // Background & Surface
-  static const Color background = Color(0xFF0A0E1A);     // Deep dark background
-  static const Color surface = Color(0xFF121829);         // Card surface
-  static const Color surfaceLight = Color(0xFF1A2235);    // Elevated surface
+  static const Color background = Color(0xFF0F1724);     // Deep dark background
+  static const Color surface = Color(0xFF182132);         // Card surface
+  static const Color surfaceLight = Color(0xFF202A3E);    // Elevated surface
+  static const Color surfaceRaised = Color(0xFF222D42);   // Raised surface
+  static const Color surfacePressed = Color(0xFF12192A);  // Pressed surface
   static const Color surfaceGlass = Color(0x1AFFFFFF);    // Glass effect
 
   // Text
   static const Color textPrimary = Color(0xFFFFFFFF);
-  static const Color textSecondary = Color(0xFFB0B8C9);
-  static const Color textMuted = Color(0xFF6B7280);
+  static const Color textSecondary = Color(0xFFC3CAD8);
+  static const Color textMuted = Color(0xFF7D869A);
+
+  // Shadows
+  static const Color shadowLight = Color(0x334A5873);
+  static const Color shadowDark = Color(0x99101828);
 
   // Status Colors
   static const Color success = Color(0xFF22C55E);
@@ -49,19 +55,19 @@ class AppColors {
   );
 
   static const LinearGradient cardGradient = LinearGradient(
-    colors: [Color(0xFF1A2235), Color(0xFF121829)],
+    colors: [Color(0xFF223047), Color(0xFF172030)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
   static const LinearGradient heroGradient = LinearGradient(
-    colors: [Color(0xFF0F172A), Color(0xFF1E3A5F), Color(0xFF0F172A)],
+    colors: [Color(0xFF0F1724), Color(0xFF23344E), Color(0xFF0F1724)],
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
   );
 
   static const LinearGradient shimmerGradient = LinearGradient(
-    colors: [Color(0xFF1A2235), Color(0xFF2A3245), Color(0xFF1A2235)],
+    colors: [Color(0xFF1B2435), Color(0xFF29364D), Color(0xFF1B2435)],
     stops: [0.0, 0.5, 1.0],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,

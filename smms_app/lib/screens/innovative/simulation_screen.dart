@@ -11,14 +11,18 @@ class SimulationScreen extends StatefulWidget {
   State<SimulationScreen> createState() => _SimulationScreenState();
 }
 
-class _SimulationScreenState extends State<SimulationScreen> with SingleTickerProviderStateMixin {
+class _SimulationScreenState extends State<SimulationScreen>
+    with SingleTickerProviderStateMixin {
   double _modifier = 1.0;
   late AnimationController _animController;
 
   @override
   void initState() {
     super.initState();
-    _animController = AnimationController(vsync: this, duration: const Duration(milliseconds: 600));
+    _animController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 600),
+    );
     _animController.forward();
   }
 
@@ -36,9 +40,9 @@ class _SimulationScreenState extends State<SimulationScreen> with SingleTickerPr
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFF0A0E1A), Color(0xFF0F172A)],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+            colors: [Color(0xFF0F1724), Color(0xFF111B2D), Color(0xFF0F1724)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
         ),
         child: SafeArea(
@@ -51,41 +55,70 @@ class _SimulationScreenState extends State<SimulationScreen> with SingleTickerPr
                   padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
                   child: Row(
                     children: [
-                      const Icon(Icons.science_rounded, color: AppColors.info, size: 24),
+                      const NeuIconTile(
+                        icon: Icons.science_rounded,
+                        iconColor: AppColors.info,
+                        padding: EdgeInsets.all(8),
+                      ),
                       const SizedBox(width: 10),
-                      Text('Digital Twin', style: AppTextStyles.headlineLarge),
+                      Expanded(
+                        child: Text(
+                          'Digital Twin',
+                          style: AppTextStyles.headlineLarge,
+                        ),
+                      ),
+                      const NeuPill(label: 'AI Sim'),
                     ],
                   ),
                 ),
                 const SizedBox(height: 4),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Text('Simulate next week\'s operations', style: AppTextStyles.bodyMedium),
+                  child: Text(
+                    'Simulate next week\'s operations',
+                    style: AppTextStyles.bodyMedium,
+                  ),
                 ),
                 const SizedBox(height: 20),
 
                 // Simulation Slider
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: GlassCard(
+                  child: NeumorphicSection(
                     borderColor: AppColors.info.withValues(alpha: 0.2),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Occupancy Modifier', style: AppTextStyles.labelLarge.copyWith(color: AppColors.info, fontSize: 13)),
+                        Text(
+                          'Occupancy Modifier',
+                          style: AppTextStyles.labelLarge.copyWith(
+                            color: AppColors.info,
+                            fontSize: 13,
+                          ),
+                        ),
                         const SizedBox(height: 4),
-                        Text('Adjust to simulate different scenarios', style: AppTextStyles.bodySmall),
+                        Text(
+                          'Adjust to simulate different scenarios',
+                          style: AppTextStyles.bodySmall,
+                        ),
                         const SizedBox(height: 16),
                         Row(
                           children: [
-                            Text('Low', style: AppTextStyles.bodySmall.copyWith(fontSize: 10)),
+                            Text(
+                              'Low',
+                              style: AppTextStyles.bodySmall.copyWith(
+                                fontSize: 10,
+                              ),
+                            ),
                             Expanded(
                               child: SliderTheme(
                                 data: SliderTheme.of(context).copyWith(
                                   activeTrackColor: AppColors.accent,
                                   inactiveTrackColor: AppColors.surfaceLight,
                                   thumbColor: AppColors.accent,
-                                  overlayColor: AppColors.accent.withValues(alpha: 0.2),
+                                  overlayColor: AppColors.accent.withValues(
+                                    alpha: 0.2,
+                                  ),
                                   trackHeight: 6,
                                 ),
                                 child: Slider(
@@ -100,19 +133,30 @@ class _SimulationScreenState extends State<SimulationScreen> with SingleTickerPr
                                 ),
                               ),
                             ),
-                            Text('High', style: AppTextStyles.bodySmall.copyWith(fontSize: 10)),
+                            Text(
+                              'High',
+                              style: AppTextStyles.bodySmall.copyWith(
+                                fontSize: 10,
+                              ),
+                            ),
                           ],
                         ),
                         Center(
                           child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 4,
+                            ),
                             decoration: BoxDecoration(
                               color: AppColors.accent.withValues(alpha: 0.12),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(
                               '${(_modifier * 100).toInt()}% capacity',
-                              style: AppTextStyles.labelLarge.copyWith(color: AppColors.accent, fontSize: 13),
+                              style: AppTextStyles.labelLarge.copyWith(
+                                color: AppColors.accent,
+                                fontSize: 13,
+                              ),
                             ),
                           ),
                         ),
@@ -124,16 +168,33 @@ class _SimulationScreenState extends State<SimulationScreen> with SingleTickerPr
 
                 // Simulation Results
                 FadeTransition(
-                  opacity: CurvedAnimation(parent: _animController, curve: Curves.easeOut),
+                  opacity: CurvedAnimation(
+                    parent: _animController,
+                    curve: Curves.easeOut,
+                  ),
                   child: Column(
                     children: [
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Row(
                           children: [
-                            Expanded(child: _resultCard('🍽️', '${data['totalMeals']}', 'Projected Meals', AppColors.info)),
+                            Expanded(
+                              child: _resultCard(
+                                '🍽️',
+                                '${data['totalMeals']}',
+                                'Projected Meals',
+                                AppColors.info,
+                              ),
+                            ),
                             const SizedBox(width: 12),
-                            Expanded(child: _resultCard('💰', '₹${data['estimatedCost']}', 'Estimated Cost', AppColors.warning)),
+                            Expanded(
+                              child: _resultCard(
+                                '💰',
+                                '₹${data['estimatedCost']}',
+                                'Estimated Cost',
+                                AppColors.warning,
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -142,28 +203,55 @@ class _SimulationScreenState extends State<SimulationScreen> with SingleTickerPr
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Row(
                           children: [
-                            Expanded(child: _resultCard('🗑️', '${data['predictedWaste']}kg', 'Predicted Waste', AppColors.error)),
+                            Expanded(
+                              child: _resultCard(
+                                '🗑️',
+                                '${data['predictedWaste']}kg',
+                                'Predicted Waste',
+                                AppColors.error,
+                              ),
+                            ),
                             const SizedBox(width: 12),
-                            Expanded(child: _resultCard('🌿', '₹${data['savings']}', 'Potential Savings', AppColors.accent)),
+                            Expanded(
+                              child: _resultCard(
+                                '🌿',
+                                '₹${data['savings']}',
+                                'Potential Savings',
+                                AppColors.accent,
+                              ),
+                            ),
                           ],
                         ),
                       ),
                       const SizedBox(height: 16),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: GlassCard(
+                        child: NeumorphicSection(
                           borderColor: AppColors.accent.withValues(alpha: 0.2),
                           gradient: LinearGradient(
-                            colors: [AppColors.accent.withValues(alpha: 0.05), AppColors.surface],
+                            colors: [
+                              AppColors.accent.withValues(alpha: 0.05),
+                              AppColors.surface,
+                            ],
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
                                 children: [
-                                  const Icon(Icons.tips_and_updates_rounded, color: AppColors.accent, size: 18),
+                                  const Icon(
+                                    Icons.tips_and_updates_rounded,
+                                    color: AppColors.accent,
+                                    size: 18,
+                                  ),
                                   const SizedBox(width: 8),
-                                  Text('AI Recommendation', style: AppTextStyles.labelLarge.copyWith(color: AppColors.accent, fontSize: 13)),
+                                  Text(
+                                    'AI Recommendation',
+                                    style: AppTextStyles.labelLarge.copyWith(
+                                      color: AppColors.accent,
+                                      fontSize: 13,
+                                    ),
+                                  ),
                                 ],
                               ),
                               const SizedBox(height: 8),
@@ -171,11 +259,14 @@ class _SimulationScreenState extends State<SimulationScreen> with SingleTickerPr
                                 _modifier < 0.6
                                     ? 'Very low expected turnout. Consider reducing raw material order by 40% and adding popular dishes to boost attendance.'
                                     : _modifier < 0.9
-                                        ? 'Below average turnout expected. Reduce cooking volume by ~20% and push "Happy Hour" incentives for off-peak slots.'
-                                        : _modifier < 1.2
-                                            ? 'Normal operations. Current inventory levels are sufficient. Monitor real-time crowd data for adjustments.'
-                                            : 'High turnout expected! Increase raw material order by 30%. Schedule additional kitchen staff and prepare overflow seating.',
-                                style: AppTextStyles.bodyMedium.copyWith(fontSize: 13, height: 1.5),
+                                    ? 'Below average turnout expected. Reduce cooking volume by ~20% and push "Happy Hour" incentives for off-peak slots.'
+                                    : _modifier < 1.2
+                                    ? 'Normal operations. Current inventory levels are sufficient. Monitor real-time crowd data for adjustments.'
+                                    : 'High turnout expected! Increase raw material order by 30%. Schedule additional kitchen staff and prepare overflow seating.',
+                                style: AppTextStyles.bodyMedium.copyWith(
+                                  fontSize: 13,
+                                  height: 1.5,
+                                ),
                               ),
                             ],
                           ),
@@ -194,7 +285,7 @@ class _SimulationScreenState extends State<SimulationScreen> with SingleTickerPr
   }
 
   Widget _resultCard(String emoji, String value, String label, Color color) {
-    return GlassCard(
+    return NeumorphicSection(
       borderColor: color.withValues(alpha: 0.15),
       child: Column(
         children: [

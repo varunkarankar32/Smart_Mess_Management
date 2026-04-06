@@ -22,9 +22,9 @@ class HeatmapScreen extends StatelessWidget {
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFF0A0E1A), Color(0xFF0F172A)],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+            colors: [Color(0xFF0F1724), Color(0xFF111B2D), Color(0xFF0F1724)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
         ),
         child: SafeArea(
@@ -37,34 +37,57 @@ class HeatmapScreen extends StatelessWidget {
                   padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
                   child: Row(
                     children: [
-                      const Icon(Icons.map_rounded, color: AppColors.info, size: 24),
+                      const NeuIconTile(
+                        icon: Icons.map_rounded,
+                        iconColor: AppColors.info,
+                        padding: EdgeInsets.all(8),
+                      ),
                       const SizedBox(width: 10),
-                      Text('Crowd Heatmap', style: AppTextStyles.headlineLarge),
+                      Expanded(
+                        child: Text(
+                          'Crowd Heatmap',
+                          style: AppTextStyles.headlineLarge,
+                        ),
+                      ),
+                      const NeuPill(label: 'LIVE Map'),
                     ],
                   ),
                 ),
                 const SizedBox(height: 4),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Text('Live congestion map of the mess hall', style: AppTextStyles.bodySmall),
+                  child: Text(
+                    'Live congestion map of the mess hall',
+                    style: AppTextStyles.bodySmall,
+                  ),
                 ),
                 const SizedBox(height: 20),
 
                 // Heatmap visualization
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: GlassCard(
+                  child: NeumorphicSection(
                     padding: const EdgeInsets.all(16),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
                           children: [
-                            Text('Mess Hall Floorplan', style: AppTextStyles.titleMedium),
+                            Text(
+                              'Mess Hall Floorplan',
+                              style: AppTextStyles.titleMedium,
+                            ),
                             const Spacer(),
                             const PulsingDot(color: AppColors.accent, size: 6),
                             const SizedBox(width: 4),
-                            Text('LIVE', style: AppTextStyles.labelSmall.copyWith(color: AppColors.accent, fontWeight: FontWeight.w700, fontSize: 9)),
+                            Text(
+                              'LIVE',
+                              style: AppTextStyles.labelSmall.copyWith(
+                                color: AppColors.accent,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 9,
+                              ),
+                            ),
                           ],
                         ),
                         const SizedBox(height: 16),
@@ -74,7 +97,9 @@ class HeatmapScreen extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: AppColors.background,
                               borderRadius: BorderRadius.circular(16),
-                              border: Border.all(color: Colors.white.withValues(alpha: 0.06)),
+                              border: Border.all(
+                                color: Colors.white.withValues(alpha: 0.06),
+                              ),
                             ),
                             child: LayoutBuilder(
                               builder: (context, constraints) {
@@ -82,19 +107,34 @@ class HeatmapScreen extends StatelessWidget {
                                   children: [
                                     // Grid lines
                                     ...List.generate(5, (i) {
-                                      final y = constraints.maxHeight * (i + 1) / 6;
+                                      final y =
+                                          constraints.maxHeight * (i + 1) / 6;
                                       return Positioned(
-                                        top: y, left: 0, right: 0,
-                                        child: Container(height: 1, color: Colors.white.withValues(alpha: 0.02)),
+                                        top: y,
+                                        left: 0,
+                                        right: 0,
+                                        child: Container(
+                                          height: 1,
+                                          color: Colors.white.withValues(
+                                            alpha: 0.02,
+                                          ),
+                                        ),
                                       );
                                     }),
 
                                     // Zone Dots
                                     ...zones.map((zone) {
-                                      final congestion = zone['congestion'] as double;
-                                      final color = _congestionColor(congestion);
-                                      final x = (zone['x'] as double) * constraints.maxWidth;
-                                      final y = (1.0 - (zone['y'] as double)) * constraints.maxHeight;
+                                      final congestion =
+                                          zone['congestion'] as double;
+                                      final color = _congestionColor(
+                                        congestion,
+                                      );
+                                      final x =
+                                          (zone['x'] as double) *
+                                          constraints.maxWidth;
+                                      final y =
+                                          (1.0 - (zone['y'] as double)) *
+                                          constraints.maxHeight;
                                       final radius = 16.0 + congestion * 18;
 
                                       return Positioned(
@@ -105,16 +145,33 @@ class HeatmapScreen extends StatelessWidget {
                                           height: radius * 2,
                                           decoration: BoxDecoration(
                                             shape: BoxShape.circle,
-                                            color: color.withValues(alpha: 0.25),
-                                            border: Border.all(color: color.withValues(alpha: 0.5), width: 1.5),
+                                            color: color.withValues(
+                                              alpha: 0.25,
+                                            ),
+                                            border: Border.all(
+                                              color: color.withValues(
+                                                alpha: 0.5,
+                                              ),
+                                              width: 1.5,
+                                            ),
                                             boxShadow: [
-                                              BoxShadow(color: color.withValues(alpha: 0.2), blurRadius: 12),
+                                              BoxShadow(
+                                                color: color.withValues(
+                                                  alpha: 0.2,
+                                                ),
+                                                blurRadius: 12,
+                                              ),
                                             ],
                                           ),
                                           child: Center(
                                             child: Text(
                                               '${(congestion * 100).toInt()}%',
-                                              style: AppTextStyles.labelSmall.copyWith(color: color, fontSize: 9, fontWeight: FontWeight.w700),
+                                              style: AppTextStyles.labelSmall
+                                                  .copyWith(
+                                                    color: color,
+                                                    fontSize: 9,
+                                                    fontWeight: FontWeight.w700,
+                                                  ),
                                             ),
                                           ),
                                         ),
@@ -154,26 +211,38 @@ class HeatmapScreen extends StatelessWidget {
                   final color = _congestionColor(congestion);
                   return Padding(
                     padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
-                    child: GlassCard(
+                    child: NeumorphicSection(
                       padding: const EdgeInsets.all(10),
                       borderColor: color.withValues(alpha: 0.15),
                       child: Row(
                         children: [
                           Container(
-                            width: 32, height: 32,
+                            width: 32,
+                            height: 32,
                             decoration: BoxDecoration(
                               color: color.withValues(alpha: 0.15),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Center(
                               child: Container(
-                                width: 10, height: 10,
-                                decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+                                width: 10,
+                                height: 10,
+                                decoration: BoxDecoration(
+                                  color: color,
+                                  shape: BoxShape.circle,
+                                ),
                               ),
                             ),
                           ),
                           const SizedBox(width: 10),
-                          Expanded(child: Text(zone['zone'] as String, style: AppTextStyles.titleMedium.copyWith(fontSize: 13))),
+                          Expanded(
+                            child: Text(
+                              zone['zone'] as String,
+                              style: AppTextStyles.titleMedium.copyWith(
+                                fontSize: 13,
+                              ),
+                            ),
+                          ),
                           SizedBox(
                             width: 60,
                             child: ClipRRect(
@@ -189,7 +258,10 @@ class HeatmapScreen extends StatelessWidget {
                           const SizedBox(width: 8),
                           Text(
                             '${(congestion * 100).toInt()}%',
-                            style: AppTextStyles.labelSmall.copyWith(color: color, fontWeight: FontWeight.w700),
+                            style: AppTextStyles.labelSmall.copyWith(
+                              color: color,
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
                         ],
                       ),
@@ -210,7 +282,8 @@ class HeatmapScreen extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
-          width: 8, height: 8,
+          width: 8,
+          height: 8,
           decoration: BoxDecoration(color: color, shape: BoxShape.circle),
         ),
         const SizedBox(width: 4),
