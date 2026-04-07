@@ -7,7 +7,7 @@ class MockDataService {
   // ─── Current User ───
   static const currentUser = UserModel(
     id: 'STU001',
-    name: 'Varun Kumar',
+    name: 'Varun Karankar',
     rollNo: '21BCS4590',
     email: 'varun.k@university.edu',
     role: 'student',
@@ -138,11 +138,11 @@ class MockDataService {
 
   // ─── Attendance Records (Admin) ───
   static List<AttendanceModel> get recentScans => [
-    AttendanceModel(id: 'A001', userId: 'STU001', userName: 'Varun Kumar', rollNo: '21BCS4590', mealType: 'Lunch', scanTime: DateTime.now().subtract(const Duration(minutes: 5)), isValid: true),
-    AttendanceModel(id: 'A002', userId: 'STU002', userName: 'Priya Singh', rollNo: '21BCS4230', mealType: 'Lunch', scanTime: DateTime.now().subtract(const Duration(minutes: 8)), isValid: true),
-    AttendanceModel(id: 'A003', userId: 'STU003', userName: 'Rahul Verma', rollNo: '21BCS4120', mealType: 'Lunch', scanTime: DateTime.now().subtract(const Duration(minutes: 12)), isValid: false),
-    AttendanceModel(id: 'A004', userId: 'STU004', userName: 'Ananya Patel', rollNo: '21BCS4780', mealType: 'Lunch', scanTime: DateTime.now().subtract(const Duration(minutes: 15)), isValid: true),
-    AttendanceModel(id: 'A005', userId: 'STU005', userName: 'Arjun Reddy', rollNo: '21BCS4340', mealType: 'Lunch', scanTime: DateTime.now().subtract(const Duration(minutes: 20)), isValid: true),
+    AttendanceModel(id: 'A001', userId: 'STU001', userName: 'Varun Karankar', rollNo: '21BCS4590', mealType: 'Lunch', scanTime: DateTime.now().subtract(const Duration(minutes: 5)), isValid: true),
+    AttendanceModel(id: 'A002', userId: 'STU002', userName: 'Aadarsh Singh', rollNo: '21BCS4230', mealType: 'Lunch', scanTime: DateTime.now().subtract(const Duration(minutes: 8)), isValid: true),
+    AttendanceModel(id: 'A003', userId: 'STU003', userName: 'Tushar Garg', rollNo: '21BCS4120', mealType: 'Lunch', scanTime: DateTime.now().subtract(const Duration(minutes: 12)), isValid: false),
+    AttendanceModel(id: 'A004', userId: 'STU004', userName: 'Varun Karankar', rollNo: '21BCS4780', mealType: 'Lunch', scanTime: DateTime.now().subtract(const Duration(minutes: 15)), isValid: true),
+    AttendanceModel(id: 'A005', userId: 'STU005', userName: 'Aadarsh Singh', rollNo: '21BCS4340', mealType: 'Lunch', scanTime: DateTime.now().subtract(const Duration(minutes: 20)), isValid: true),
   ];
 
   // ─── Hourly Footfall Data ───
