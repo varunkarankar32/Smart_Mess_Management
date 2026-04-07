@@ -66,7 +66,7 @@ class _QrPassScreenState extends State<QrPassScreen> with TickerProviderStateMix
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFF0A0E1A), Color(0xFF0F172A), Color(0xFF0A0E1A)],
+            colors: [Colors.white, Colors.white, Colors.white],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -167,8 +167,8 @@ class _QrPassScreenState extends State<QrPassScreen> with TickerProviderStateMix
                           version: QrVersions.auto,
                           size: 180,
                           backgroundColor: Colors.white,
-                          eyeStyle: const QrEyeStyle(eyeShape: QrEyeShape.square, color: Color(0xFF0F172A)),
-                          dataModuleStyle: const QrDataModuleStyle(dataModuleShape: QrDataModuleShape.square, color: Color(0xFF0F172A)),
+                          eyeStyle: const QrEyeStyle(eyeShape: QrEyeShape.square, color: Colors.white),
+                          dataModuleStyle: const QrDataModuleStyle(dataModuleShape: QrDataModuleShape.square, color: Colors.white),
                         ),
                       ),
                       const SizedBox(height: 12),

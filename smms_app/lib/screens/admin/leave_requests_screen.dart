@@ -32,11 +32,7 @@ class _LeaveRequestsScreenState extends State<LeaveRequestsScreen> {
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFF0F1724), Color(0xFF111B2D), Color(0xFF0F1724)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
+          gradient: AppColors.heroGradient,
         ),
         child: SafeArea(
           child: SingleChildScrollView(

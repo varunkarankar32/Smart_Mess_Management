@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class AppColors {
   // Primary Brand Colors
-  static const Color primary = Color(0xFF0F172A);       // Deep Slate Blue
+  static const Color primary = Colors.white;       // Deep Slate Blue
   static const Color primaryLight = Color(0xFF1E293B);   // Lighter Slate
   static const Color primaryDark = Color(0xFF020617);    // Darkest Slate
 
@@ -13,8 +13,8 @@ class AppColors {
   static const Color accentGlow = Color(0x3322C55E);     // Green glow overlay
 
   // Background & Surface
-  static const Color background = Color(0xFF0A0E1A);     // Deep dark background
-  static const Color surface = Color(0xFF121829);         // Card surface
+  static const Color background = Colors.white;     // Deep dark background
+  static const Color surface = Colors.white;         // Card surface
   static const Color surfaceLight = Color(0xFF1A2235);    // Elevated surface
   static const Color surfaceGlass = Color(0x1AFFFFFF);    // Glass effect
 
@@ -37,7 +37,7 @@ class AppColors {
 
   // Gradient Presets
   static const LinearGradient primaryGradient = LinearGradient(
-    colors: [Color(0xFF0F172A), Color(0xFF1E293B)],
+    colors: [Colors.white, Color(0xFF1E293B)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
@@ -49,13 +49,13 @@ class AppColors {
   );
 
   static const LinearGradient cardGradient = LinearGradient(
-    colors: [Color(0xFF1A2235), Color(0xFF121829)],
+    colors: [Color(0xFF1A2235), Colors.white],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
   static const LinearGradient heroGradient = LinearGradient(
-    colors: [Color(0xFF0F172A), Color(0xFF1E3A5F), Color(0xFF0F172A)],
+    colors: [Colors.white, Color(0xFF1E3A5F), Colors.white],
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
   );
