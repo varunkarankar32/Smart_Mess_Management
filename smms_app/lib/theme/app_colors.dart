@@ -66,4 +66,23 @@ class AppColors {
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
+
+  // --- New Glassmorphism additions ---
+  static const LinearGradient glassBackgroundGradient = LinearGradient(
+    colors: [
+      Color(0xFFE0F2FE), // Soft Blue
+      Color(0xFFF3E8FF), // Subtle Purple
+    ],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  static const LinearGradient glassAccentGradient = LinearGradient(
+    colors: [
+      Color(0xFF818CF8), // Indigo
+      Color(0xFFC084FC), // Purple
+    ],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
 }

@@ -15,14 +15,8 @@ class AdminDashboardScreen extends StatelessWidget {
     final occupancy = (headcount / capacity * 100).clamp(0, 100).toInt();
 
     return Scaffold(
+      backgroundColor: Colors.transparent,
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.white, Colors.white],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
         child: SafeArea(
           child: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),

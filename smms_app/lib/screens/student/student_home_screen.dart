@@ -70,7 +70,7 @@ class _StudentHomeScreenState extends State<StudentHomeScreen>
     final weather = MockDataService.currentWeather;
 
     return Scaffold(
-      backgroundColor: _pageBackground,
+      backgroundColor: Colors.transparent,
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {

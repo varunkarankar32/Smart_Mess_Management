@@ -1,5 +1,6 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
+import '../theme/glass_theme.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -14,8 +15,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
+    return GlassScaffold(
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
@@ -143,80 +143,43 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 20),
                   FadeInUp(
                     duration: const Duration(milliseconds: 1800),
-                    child: Container(
+                    child: GlassContainer(
                       padding: const EdgeInsets.all(5),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(
-                            color: const Color.fromRGBO(143, 148, 251, 1)),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Color.fromRGBO(143, 148, 251, .2),
-                            blurRadius: 20.0,
-                            offset: Offset(0, 10),
-                          )
-                        ],
-                      ),
                       child: Column(
                         children: <Widget>[
                           Container(
                             padding: const EdgeInsets.all(8.0),
-                            decoration: const BoxDecoration(
-                              border: Border(
-                                bottom: BorderSide(
-                                  color: Color.fromRGBO(143, 148, 251, 1),
-                                ),
-                              ),
-                            ),
-                            child: TextField(
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                hintText: _isStudent
-                                    ? "Student Email or Roll No."
-                                    : "Admin Username / Email",
-                                hintStyle: TextStyle(color: Colors.grey[700]),
-                              ),
+                            child: GlassTextField(
+                              controller: TextEditingController(), // Placeholder
+                              hintText: _isStudent
+                                  ? "Student Email or Roll No."
+                                  : "Admin Username / Email",
                             ),
                           ),
                           if (!_isLogin)
                             Container(
                               padding: const EdgeInsets.all(8.0),
-                              decoration: const BoxDecoration(
-                                border: Border(
-                                  bottom: BorderSide(
-                                    color: Color.fromRGBO(143, 148, 251, 1),
-                                  ),
-                                ),
-                              ),
                               child: Row(
                                 children: [
                                   Expanded(
-                                    child: TextField(
-                                      decoration: InputDecoration(
-                                        border: InputBorder.none,
-                                        hintText: "Enter OTP",
-                                        hintStyle:
-                                            TextStyle(color: Colors.grey[700]),
-                                      ),
+                                    child: GlassTextField(
+                                      controller: TextEditingController(), // Placeholder
+                                      hintText: "Enter OTP",
                                     ),
                                   ),
                                   TextButton(
                                     onPressed: () {},
-                                    child: const Text("Send OTP"),
+                                    child: const Text("Send OTP", style: TextStyle(color: Color.fromRGBO(143, 148, 251, 1))),
                                   ),
                                 ],
                               ),
                             ),
                           Container(
                             padding: const EdgeInsets.all(8.0),
-                            child: TextField(
-                              obscureText: true,
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                hintText: "Password",
-                                hintStyle: TextStyle(color: Colors.grey[700]),
-                              ),
+                            child: GlassTextField(
+                              controller: TextEditingController(), // Placeholder
+                              isPassword: true,
+                              hintText: "Password",
                             ),
                           )
                         ],
@@ -226,7 +189,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 30),
                   FadeInUp(
                     duration: const Duration(milliseconds: 1900),
-                    child: InkWell(
+                    child: GlassButton(
+                      label: _isLogin ? "Login" : "Sign Up",
+                      isPrimary: true,
                       onTap: () {
                         if (_isLogin) {
                           if (_isStudent) {
@@ -238,27 +203,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           // Handle signup
                         }
                       },
-                      child: Container(
-                        height: 50,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          gradient: const LinearGradient(
-                            colors: [
-                              Color.fromRGBO(143, 148, 251, 1),
-                              Color.fromRGBO(143, 148, 251, .6),
-                            ],
-                          ),
-                        ),
-                        child: Center(
-                          child: Text(
-                            _isLogin ? "Login" : "Sign Up",
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
                     ),
                   ),
                   const SizedBox(height: 40),

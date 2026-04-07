@@ -1,4 +1,6 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
+import '../theme/glass_theme.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_text_styles.dart';
 import 'admin/admin_dashboard_screen.dart';
@@ -33,25 +35,25 @@ class _AdminNavShellState extends State<AdminNavShell> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return GlassScaffold(
       body: IndexedStack(index: _currentIndex, children: _pages),
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          border: Border(
-            top: BorderSide(
-              color: Colors.white.withValues(alpha: 0.04),
-              width: 1,
-            ),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.3),
-              blurRadius: 20,
-              offset: const Offset(0, -5),
-            ),
-          ],
+      bottomNavigationBar: ClipRRect(
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(24),
+          topRight: Radius.circular(24),
         ),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.08),
+              border: Border(
+                top: BorderSide(
+                  color: Colors.white.withValues(alpha: 0.2),
+                  width: 1,
+                ),
+              ),
+            ),
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
@@ -65,6 +67,9 @@ class _AdminNavShellState extends State<AdminNavShell> {
                 _navItem(Icons.more_horiz_rounded, 'More', 4),
               ],
             ),
+          ),
+        ),
+      ),
           ),
         ),
       ),
@@ -113,17 +118,9 @@ class _AdminNavShellState extends State<AdminNavShell> {
 class _AdminMoreScreen extends StatelessWidget {
   const _AdminMoreScreen();
 
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return GlassScaffold(
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.white, Colors.white],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
         child: SafeArea(
           child: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),

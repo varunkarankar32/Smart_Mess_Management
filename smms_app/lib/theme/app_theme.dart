@@ -7,12 +7,12 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
-      scaffoldBackgroundColor: AppColors.background,
+      scaffoldBackgroundColor: Colors.transparent,
       primaryColor: AppColors.accent,
       colorScheme: const ColorScheme.dark(
-        primary: AppColors.accent,
-        secondary: AppColors.accentLight,
-        surface: AppColors.surface,
+        primary: Color(0xFF818CF8), // Indigo glass accent
+        secondary: Color(0xFFC084FC), // Purple glass accent
+        surface: Colors.transparent,
         error: AppColors.error,
       ),
       appBarTheme: AppBarTheme(
@@ -27,28 +27,29 @@ class AppTheme {
         iconTheme: const IconThemeData(color: AppColors.textPrimary),
       ),
       cardTheme: CardThemeData(
-        color: AppColors.surface,
+        color: Colors.white.withValues(alpha: 0.05),
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
-          side: BorderSide(color: Colors.white.withValues(alpha: 0.05)),
+          side: BorderSide(color: Colors.white.withValues(alpha: 0.15)),
         ),
       ),
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-        backgroundColor: AppColors.surface,
-        selectedItemColor: AppColors.accent,
-        unselectedItemColor: AppColors.textMuted,
+        backgroundColor: Colors.transparent,
+        selectedItemColor: Color(0xFF818CF8),
+        unselectedItemColor: Colors.grey,
         type: BottomNavigationBarType.fixed,
         elevation: 0,
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.accent,
-          foregroundColor: AppColors.primary,
+          backgroundColor: Colors.white.withValues(alpha: 0.1),
+          foregroundColor: Colors.white,
           elevation: 0,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(16),
+            side: BorderSide(color: Colors.white.withValues(alpha: 0.2)),
           ),
           textStyle: GoogleFonts.inter(
             fontSize: 15,
@@ -58,7 +59,7 @@ class AppTheme {
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: AppColors.surfaceLight,
+        fillColor: Colors.white.withValues(alpha: 0.05),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide.none,

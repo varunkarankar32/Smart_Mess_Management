@@ -70,8 +70,14 @@ class _IdCardScannerScreenState extends State<IdCardScannerScreen>
         return;
       }
 
-      final backCamera = cameras.where((camera) => camera.lensDirection == CameraLensDirection.back).toList();
-      final selectedCamera = backCamera.isNotEmpty ? backCamera.first : cameras.first;
+      final backCamera =
+          cameras
+              .where(
+                (camera) => camera.lensDirection == CameraLensDirection.back,
+              )
+              .toList();
+      final selectedCamera =
+          backCamera.isNotEmpty ? backCamera.first : cameras.first;
       final controller = CameraController(
         selectedCamera,
         ResolutionPreset.high,
@@ -130,7 +136,9 @@ class _IdCardScannerScreenState extends State<IdCardScannerScreen>
 
   Future<void> _scanIdCard() async {
     final controller = _cameraController;
-    if (controller == null || !controller.value.isInitialized || _isProcessing) {
+    if (controller == null ||
+        !controller.value.isInitialized ||
+        _isProcessing) {
       return;
     }
 
@@ -182,29 +190,28 @@ class _IdCardScannerScreenState extends State<IdCardScannerScreen>
   }
 
   _CardScanResult _parseCardText(String rawText) {
-    final lines = rawText
-        .split(RegExp(r'[\r\n]+'))
-        .map((line) => line.trim())
-        .where((line) => line.isNotEmpty)
-        .toList();
+    final lines =
+        rawText
+            .split(RegExp(r'[\r\n]+'))
+            .map((line) => line.trim())
+            .where((line) => line.isNotEmpty)
+            .toList();
 
-    String? name = _extractValueAfterLabel(
-      lines,
-      const ['student name', 'name of student', 'name'],
-    );
-    String? enrollmentNo = _extractValueAfterLabel(
-      lines,
-      const [
-        'enrollment number',
-        'enrollment no',
-        'enrolment number',
-        'enrolment no',
-        'roll no',
-        'roll number',
-        'student id',
-        'id no',
-      ],
-    );
+    String? name = _extractValueAfterLabel(lines, const [
+      'student name',
+      'name of student',
+      'name',
+    ]);
+    String? enrollmentNo = _extractValueAfterLabel(lines, const [
+      'enrollment number',
+      'enrollment no',
+      'enrolment number',
+      'enrolment no',
+      'roll no',
+      'roll number',
+      'student id',
+      'id no',
+    ]);
 
     name ??= _findLikelyName(lines);
     enrollmentNo ??= _findLikelyEnrollment(lines);
@@ -245,10 +252,11 @@ class _IdCardScannerScreenState extends State<IdCardScannerScreen>
           continue;
         }
 
-        final afterLabel = line
-            .substring(labelIndex + label.length)
-            .replaceFirst(RegExp(r'^[\s:\-]+'), '')
-            .trim();
+        final afterLabel =
+            line
+                .substring(labelIndex + label.length)
+                .replaceFirst(RegExp(r'^[\s:\-]+'), '')
+                .trim();
         if (afterLabel.isNotEmpty) {
           return afterLabel;
         }
@@ -286,7 +294,9 @@ class _IdCardScannerScreenState extends State<IdCardScannerScreen>
       }
 
       final wordCount = line.split(RegExp(r'\s+')).length;
-      final alphabeticWords = RegExp(r"^[A-Za-z][A-Za-z.'\-]*(\s+[A-Za-z][A-Za-z.'\-]*)+$");
+      final alphabeticWords = RegExp(
+        r"^[A-Za-z][A-Za-z.'\-]*(\s+[A-Za-z][A-Za-z.'\-]*)+$",
+      );
       if (wordCount >= 2 && wordCount <= 4 && alphabeticWords.hasMatch(line)) {
         return line;
       }
@@ -335,7 +345,8 @@ class _IdCardScannerScreenState extends State<IdCardScannerScreen>
     return FutureBuilder<void>(
       future: _initializationFuture,
       builder: (context, snapshot) {
-        if (snapshot.connectionState != ConnectionState.done || !controller.value.isInitialized) {
+        if (snapshot.connectionState != ConnectionState.done ||
+            !controller.value.isInitialized) {
           return _buildLoadingState();
         }
 
@@ -353,9 +364,10 @@ class _IdCardScannerScreenState extends State<IdCardScannerScreen>
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
-                      color: _scanStatus == 'success'
-                          ? AppColors.accent.withValues(alpha: 0.75)
-                          : AppColors.accent.withValues(alpha: 0.45),
+                      color:
+                          _scanStatus == 'success'
+                              ? AppColors.accent.withValues(alpha: 0.75)
+                              : AppColors.accent.withValues(alpha: 0.45),
                       width: 2,
                     ),
                   ),
@@ -369,12 +381,19 @@ class _IdCardScannerScreenState extends State<IdCardScannerScreen>
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     _statusChip(
-                      icon: _scanStatus == 'scanning' ? Icons.sync_rounded : Icons.badge_rounded,
-                      label: _scanStatus == 'scanning' ? 'Scanning' : 'ID Ready',
+                      icon:
+                          _scanStatus == 'scanning'
+                              ? Icons.sync_rounded
+                              : Icons.badge_rounded,
+                      label:
+                          _scanStatus == 'scanning' ? 'Scanning' : 'ID Ready',
                     ),
                     _statusChip(
                       icon: Icons.camera_alt_rounded,
-                      label: controller.description.name.isNotEmpty ? controller.description.name : 'Back Camera',
+                      label:
+                          controller.description.name.isNotEmpty
+                              ? controller.description.name
+                              : 'Back Camera',
                     ),
                   ],
                 ),
@@ -421,17 +440,25 @@ class _IdCardScannerScreenState extends State<IdCardScannerScreen>
                     color: Colors.black.withValues(alpha: 0.25),
                     child: Center(
                       child: GlassCard(
-                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 18,
+                        ),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             const SizedBox(
                               width: 30,
                               height: 30,
-                              child: CircularProgressIndicator(strokeWidth: 2.5),
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2.5,
+                              ),
                             ),
                             const SizedBox(height: 12),
-                            Text('Reading ID card text...', style: AppTextStyles.labelLarge),
+                            Text(
+                              'Reading ID card text...',
+                              style: AppTextStyles.labelLarge,
+                            ),
                           ],
                         ),
                       ),
@@ -462,7 +489,12 @@ class _IdCardScannerScreenState extends State<IdCardScannerScreen>
               child: CircularProgressIndicator(strokeWidth: 2.5),
             ),
             const SizedBox(height: 12),
-            Text('Starting camera...', style: AppTextStyles.bodySmall.copyWith(color: AppColors.textMuted)),
+            Text(
+              'Starting camera...',
+              style: AppTextStyles.bodySmall.copyWith(
+                color: AppColors.textMuted,
+              ),
+            ),
           ],
         ),
       ),
@@ -482,26 +514,43 @@ class _IdCardScannerScreenState extends State<IdCardScannerScreen>
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.no_photography_rounded, size: 52, color: AppColors.textMuted.withValues(alpha: 0.4)),
+              Icon(
+                Icons.no_photography_rounded,
+                size: 52,
+                color: AppColors.textMuted.withValues(alpha: 0.4),
+              ),
               const SizedBox(height: 12),
               Text('Camera unavailable', style: AppTextStyles.titleLarge),
               const SizedBox(height: 6),
               Text(
-                _errorMessage ?? 'Grant camera permission or use a phone with a camera.',
-                style: AppTextStyles.bodySmall.copyWith(color: AppColors.textMuted),
+                _errorMessage ??
+                    'Grant camera permission or use a phone with a camera.',
+                style: AppTextStyles.bodySmall.copyWith(
+                  color: AppColors.textMuted,
+                ),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 16),
               GestureDetector(
                 onTap: _initializeCamera,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 18,
+                    vertical: 10,
+                  ),
                   decoration: BoxDecoration(
                     color: AppColors.accent.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: AppColors.accent.withValues(alpha: 0.3)),
+                    border: Border.all(
+                      color: AppColors.accent.withValues(alpha: 0.3),
+                    ),
                   ),
-                  child: Text('Retry Camera', style: AppTextStyles.labelLarge.copyWith(color: AppColors.accent)),
+                  child: Text(
+                    'Retry Camera',
+                    style: AppTextStyles.labelLarge.copyWith(
+                      color: AppColors.accent,
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -524,7 +573,13 @@ class _IdCardScannerScreenState extends State<IdCardScannerScreen>
         children: [
           Icon(icon, size: 14, color: Colors.white),
           const SizedBox(width: 6),
-          Text(label, style: AppTextStyles.labelSmall.copyWith(color: Colors.white, fontSize: 10)),
+          Text(
+            label,
+            style: AppTextStyles.labelSmall.copyWith(
+              color: Colors.white,
+              fontSize: 10,
+            ),
+          ),
         ],
       ),
     );
@@ -544,11 +599,18 @@ class _IdCardScannerScreenState extends State<IdCardScannerScreen>
         children: [
           Icon(icon, color: accentColor, size: 54),
           const SizedBox(height: 10),
-          Text(title, style: AppTextStyles.titleLarge.copyWith(color: accentColor)),
+          Text(
+            title,
+            style: AppTextStyles.titleLarge.copyWith(color: accentColor),
+          ),
           const SizedBox(height: 6),
           SizedBox(
             width: 260,
-            child: Text(subtitle, style: AppTextStyles.bodySmall, textAlign: TextAlign.center),
+            child: Text(
+              subtitle,
+              style: AppTextStyles.bodySmall,
+              textAlign: TextAlign.center,
+            ),
           ),
           if (_scanStatus == 'success') ...[
             const SizedBox(height: 16),
@@ -562,13 +624,31 @@ class _IdCardScannerScreenState extends State<IdCardScannerScreen>
               ),
               child: Column(
                 children: [
-                  Text('Student Name', style: AppTextStyles.labelSmall.copyWith(color: AppColors.textMuted)),
+                  Text(
+                    'Student Name',
+                    style: AppTextStyles.labelSmall.copyWith(
+                      color: AppColors.textMuted,
+                    ),
+                  ),
                   const SizedBox(height: 4),
-                  Text(_scannedName, style: AppTextStyles.headlineMedium, textAlign: TextAlign.center),
+                  Text(
+                    _scannedName,
+                    style: AppTextStyles.headlineMedium,
+                    textAlign: TextAlign.center,
+                  ),
                   const SizedBox(height: 10),
-                  Text('Enrollment Number', style: AppTextStyles.labelSmall.copyWith(color: AppColors.textMuted)),
+                  Text(
+                    'Enrollment Number',
+                    style: AppTextStyles.labelSmall.copyWith(
+                      color: AppColors.textMuted,
+                    ),
+                  ),
                   const SizedBox(height: 4),
-                  Text(_scannedEnrollmentNo, style: AppTextStyles.bodyMedium, textAlign: TextAlign.center),
+                  Text(
+                    _scannedEnrollmentNo,
+                    style: AppTextStyles.bodyMedium,
+                    textAlign: TextAlign.center,
+                  ),
                 ],
               ),
             ),
@@ -673,7 +753,6 @@ class _IdCardScannerScreenState extends State<IdCardScannerScreen>
                               ),
                             ),
                           ),
-
                       ],
                     ),
                   ),
@@ -705,10 +784,14 @@ class _IdCardScannerScreenState extends State<IdCardScannerScreen>
                                   vertical: 12,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: AppColors.accent.withValues(alpha: 0.15),
+                                  color: AppColors.accent.withValues(
+                                    alpha: 0.15,
+                                  ),
                                   borderRadius: BorderRadius.circular(12),
                                   border: Border.all(
-                                    color: AppColors.accent.withValues(alpha: 0.3),
+                                    color: AppColors.accent.withValues(
+                                      alpha: 0.3,
+                                    ),
                                   ),
                                 ),
                                 child: Center(
@@ -726,33 +809,37 @@ class _IdCardScannerScreenState extends State<IdCardScannerScreen>
                           const SizedBox(width: 10),
                           Expanded(
                             child: GestureDetector(
-                              onTap: () {
-                                if (_isProcessing) {
-                                  return;
-                                }
-                                setState(() {
-                                  _scanStatus = 'error';
-                                  _scanHint = 'Point the camera at a valid college ID card and try again.';
-                                  _errorMessage = _scanHint;
-                                  _scannedName = '';
-                                  _scannedEnrollmentNo = '';
-                                });
-                                _flashController.forward(from: 0);
-                              },
+                              onTap:
+                                  _isProcessing
+                                      ? null
+                                      : () {
+                                        setState(() {
+                                          _scanStatus = 'idle';
+                                          _scanHint =
+                                              'Align the college ID card inside the frame';
+                                          _errorMessage = null;
+                                          _scannedName = '';
+                                          _scannedEnrollmentNo = '';
+                                        });
+                                      },
                               child: Container(
                                 padding: const EdgeInsets.symmetric(
                                   vertical: 12,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: AppColors.error.withValues(alpha: 0.15),
+                                  color: AppColors.error.withValues(
+                                    alpha: 0.15,
+                                  ),
                                   borderRadius: BorderRadius.circular(12),
                                   border: Border.all(
-                                    color: AppColors.error.withValues(alpha: 0.3),
+                                    color: AppColors.error.withValues(
+                                      alpha: 0.3,
+                                    ),
                                   ),
                                 ),
                                 child: Center(
                                   child: Text(
-                                    '❌ Simulate Error',
+                                    '↺ Clear Result',
                                     style: AppTextStyles.labelLarge.copyWith(
                                       color: AppColors.error,
                                       fontSize: 12,
