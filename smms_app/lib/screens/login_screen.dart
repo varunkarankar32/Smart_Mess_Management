@@ -1,7 +1,5 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
-import '../../theme/app_colors.dart';
-import '../../theme/app_text_styles.dart';
-import '../../widgets/common_widgets.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -10,185 +8,325 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStateMixin {
+class _LoginScreenState extends State<LoginScreen> {
   bool _isStudent = true;
-  late AnimationController _fadeController;
-  late Animation<double> _fadeAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _fadeController = AnimationController(vsync: this, duration: const Duration(milliseconds: 1200));
-    _fadeAnimation = CurvedAnimation(parent: _fadeController, curve: Curves.easeOut);
-    _fadeController.forward();
-  }
-
-  @override
-  void dispose() {
-    _fadeController.dispose();
-    super.dispose();
-  }
+  bool _isLogin = true;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.white, Colors.white, Colors.white],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
-        child: SafeArea(
-          child: FadeTransition(
-            opacity: _fadeAnimation,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 28),
-              child: Column(
-                children: [
-                  const Spacer(flex: 2),
-                  // Logo & Branding
-                  Container(
-                    width: 90, height: 90,
-                    decoration: BoxDecoration(
-                      gradient: AppColors.accentGradient,
-                      borderRadius: BorderRadius.circular(24),
-                      boxShadow: [
-                        BoxShadow(color: AppColors.accent.withValues(alpha: 0.4), blurRadius: 30, offset: const Offset(0, 10)),
-                      ],
-                    ),
-                    child: const Icon(Icons.restaurant_menu_rounded, size: 44, color: Colors.white),
-                  ),
-                  const SizedBox(height: 24),
-                  Text('SMMS', style: AppTextStyles.displayLarge.copyWith(letterSpacing: 4)),
-                  const SizedBox(height: 6),
-                  Text('Smart Mess Management System', style: AppTextStyles.bodyMedium),
-                  const Spacer(),
-
-                  // Role Toggle
-                  GlassCard(
-                    padding: const EdgeInsets.all(4),
-                    borderRadius: 16,
-                    child: Row(
-                      children: [
-                        _roleTab('Student', Icons.school_rounded, _isStudent, () => setState(() => _isStudent = true)),
-                        _roleTab('Admin', Icons.admin_panel_settings_rounded, !_isStudent, () => setState(() => _isStudent = false)),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-
-                  // Email Field
-                  TextField(
-                    style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textPrimary),
-                    decoration: InputDecoration(
-                      hintText: _isStudent ? 'University Email / Roll No.' : 'Admin ID',
-                      prefixIcon: Icon(_isStudent ? Icons.person_outline_rounded : Icons.shield_outlined, color: AppColors.textMuted),
-                    ),
-                  ),
-                  const SizedBox(height: 14),
-                  TextField(
-                    obscureText: true,
-                    style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textPrimary),
-                    decoration: const InputDecoration(
-                      hintText: 'Password',
-                      prefixIcon: Icon(Icons.lock_outline_rounded, color: AppColors.textMuted),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: () {},
-                      child: Text('Forgot password?', style: AppTextStyles.bodySmall.copyWith(color: AppColors.accent)),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-
-                  // Login Button
-                  SizedBox(
-                    width: double.infinity,
-                    height: 52,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        if (_isStudent) {
-                          Navigator.pushReplacementNamed(context, '/student');
-                        } else {
-                          Navigator.pushReplacementNamed(context, '/admin');
-                        }
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(_isStudent ? 'Login as Student' : 'Login as Admin'),
-                          const SizedBox(width: 8),
-                          const Icon(Icons.arrow_forward_rounded, size: 20),
-                        ],
+      backgroundColor: Colors.white,
+      body: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            Container(
+              height: 400,
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/images/background.png'),
+                  fit: BoxFit.fill,
+                ),
+              ),
+              child: Stack(
+                children: <Widget>[
+                  Positioned(
+                    left: 30,
+                    width: 80,
+                    height: 200,
+                    child: FadeInUp(
+                      duration: const Duration(seconds: 1),
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage('assets/images/light-1.png'),
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  // SSO Button
-                  SizedBox(
-                    width: double.infinity,
-                    height: 48,
-                    child: OutlinedButton(
-                      onPressed: () {
-                        if (_isStudent) {
-                          Navigator.pushReplacementNamed(context, '/student');
-                        } else {
-                          Navigator.pushReplacementNamed(context, '/admin');
-                        }
-                      },
-                      style: OutlinedButton.styleFrom(
-                        side: BorderSide(color: Colors.white.withValues(alpha: 0.1)),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(Icons.login_rounded, size: 18, color: AppColors.textSecondary),
-                          const SizedBox(width: 8),
-                          Text('Sign in with University SSO', style: AppTextStyles.bodyMedium),
-                        ],
+                  Positioned(
+                    left: 140,
+                    width: 80,
+                    height: 150,
+                    child: FadeInUp(
+                      duration: const Duration(milliseconds: 1200),
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage('assets/images/light-2.png'),
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                  const Spacer(flex: 2),
+                  Positioned(
+                    right: 40,
+                    top: 40,
+                    width: 80,
+                    height: 150,
+                    child: FadeInUp(
+                      duration: const Duration(milliseconds: 1300),
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage('assets/images/clock.png'),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    child: FadeInUp(
+                      duration: const Duration(milliseconds: 1600),
+                      child: Container(
+                        margin: const EdgeInsets.only(top: 50),
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(
+                                Icons.school,
+                                size: 50,
+                                color: Colors.white,
+                              ),
+                              const SizedBox(height: 10),
+                              const Text(
+                                "IIIT Allahabad Mess",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 32,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              Text(
+                                _isLogin ? "Login" : "Sign Up",
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 24,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
                 ],
               ),
             ),
-          ),
+            Padding(
+              padding: const EdgeInsets.all(30.0),
+              child: Column(
+                children: <Widget>[
+                  // Role Toggle
+                  FadeInUp(
+                    duration: const Duration(milliseconds: 1700),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _buildRoleToggle("Student", _isStudent, () {
+                          setState(() {
+                            _isStudent = true;
+                          });
+                        }),
+                        const SizedBox(width: 20),
+                        _buildRoleToggle("Admin", !_isStudent, () {
+                          setState(() {
+                            _isStudent = false;
+                          });
+                        }),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  FadeInUp(
+                    duration: const Duration(milliseconds: 1800),
+                    child: Container(
+                      padding: const EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                            color: const Color.fromRGBO(143, 148, 251, 1)),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Color.fromRGBO(143, 148, 251, .2),
+                            blurRadius: 20.0,
+                            offset: Offset(0, 10),
+                          )
+                        ],
+                      ),
+                      child: Column(
+                        children: <Widget>[
+                          Container(
+                            padding: const EdgeInsets.all(8.0),
+                            decoration: const BoxDecoration(
+                              border: Border(
+                                bottom: BorderSide(
+                                  color: Color.fromRGBO(143, 148, 251, 1),
+                                ),
+                              ),
+                            ),
+                            child: TextField(
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: _isStudent
+                                    ? "Student Email or Roll No."
+                                    : "Admin Username / Email",
+                                hintStyle: TextStyle(color: Colors.grey[700]),
+                              ),
+                            ),
+                          ),
+                          if (!_isLogin)
+                            Container(
+                              padding: const EdgeInsets.all(8.0),
+                              decoration: const BoxDecoration(
+                                border: Border(
+                                  bottom: BorderSide(
+                                    color: Color.fromRGBO(143, 148, 251, 1),
+                                  ),
+                                ),
+                              ),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: TextField(
+                                      decoration: InputDecoration(
+                                        border: InputBorder.none,
+                                        hintText: "Enter OTP",
+                                        hintStyle:
+                                            TextStyle(color: Colors.grey[700]),
+                                      ),
+                                    ),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {},
+                                    child: const Text("Send OTP"),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          Container(
+                            padding: const EdgeInsets.all(8.0),
+                            child: TextField(
+                              obscureText: true,
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: "Password",
+                                hintStyle: TextStyle(color: Colors.grey[700]),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                  FadeInUp(
+                    duration: const Duration(milliseconds: 1900),
+                    child: InkWell(
+                      onTap: () {
+                        if (_isLogin) {
+                          if (_isStudent) {
+                            Navigator.pushReplacementNamed(context, '/student');
+                          } else {
+                            Navigator.pushReplacementNamed(context, '/admin');
+                          }
+                        } else {
+                          // Handle signup
+                        }
+                      },
+                      child: Container(
+                        height: 50,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          gradient: const LinearGradient(
+                            colors: [
+                              Color.fromRGBO(143, 148, 251, 1),
+                              Color.fromRGBO(143, 148, 251, .6),
+                            ],
+                          ),
+                        ),
+                        child: Center(
+                          child: Text(
+                            _isLogin ? "Login" : "Sign Up",
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 40),
+                  FadeInUp(
+                    duration: const Duration(milliseconds: 2000),
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _isLogin = !_isLogin;
+                        });
+                      },
+                      child: Text(
+                        _isLogin
+                            ? "Don't have an account? Sign Up"
+                            : "Already have an account? Login",
+                        style: const TextStyle(
+                          color: Color.fromRGBO(143, 148, 251, 1),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  if (_isLogin)
+                    FadeInUp(
+                      duration: const Duration(milliseconds: 2100),
+                      child: const Text(
+                        "Forgot Password?",
+                        style: TextStyle(
+                          color: Color.fromRGBO(143, 148, 251, 1),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            )
+          ],
         ),
       ),
     );
   }
 
-  Widget _roleTab(String label, IconData icon, bool isActive, VoidCallback onTap) {
-    return Expanded(
-      child: GestureDetector(
-        onTap: onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 250),
-          padding: const EdgeInsets.symmetric(vertical: 12),
-          decoration: BoxDecoration(
-            color: isActive ? AppColors.accent : Colors.transparent,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, size: 18, color: isActive ? Colors.white : AppColors.textMuted),
-              const SizedBox(width: 6),
-              Text(
-                label,
-                style: AppTextStyles.labelLarge.copyWith(
-                  color: isActive ? Colors.white : AppColors.textMuted,
-                  fontSize: 13,
-                ),
-              ),
-            ],
+  Widget _buildRoleToggle(String label, bool isActive, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        decoration: BoxDecoration(
+          color: isActive
+              ? const Color.fromRGBO(143, 148, 251, 1)
+              : Colors.grey[200],
+          borderRadius: BorderRadius.circular(30),
+          boxShadow: isActive
+              ? [
+                  const BoxShadow(
+                    color: Color.fromRGBO(143, 148, 251, .4),
+                    blurRadius: 10.0,
+                    offset: Offset(0, 5),
+                  )
+                ]
+              : [],
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            color: isActive ? Colors.white : Colors.grey[700],
+            fontWeight: FontWeight.bold,
           ),
         ),
       ),
