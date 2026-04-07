@@ -37,9 +37,15 @@ class AdminDashboardScreen extends StatelessWidget {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Command Center', style: AppTextStyles.headlineLarge),
+                          Text(
+                            'Command Center',
+                            style: AppTextStyles.headlineLarge,
+                          ),
                           const SizedBox(height: 2),
-                          Text('Admin • ${MockDataService.adminUser.name}', style: AppTextStyles.bodySmall),
+                          Text(
+                            'Admin • ${MockDataService.adminUser.name}',
+                            style: AppTextStyles.bodySmall,
+                          ),
                         ],
                       ),
                       const Spacer(),
@@ -49,7 +55,11 @@ class AdminDashboardScreen extends StatelessWidget {
                           color: AppColors.surfaceLight,
                           borderRadius: BorderRadius.circular(14),
                         ),
-                        child: const Icon(Icons.settings_outlined, color: AppColors.textSecondary, size: 22),
+                        child: const Icon(
+                          Icons.settings_outlined,
+                          color: AppColors.textSecondary,
+                          size: 22,
+                        ),
                       ),
                     ],
                   ),
@@ -62,7 +72,10 @@ class AdminDashboardScreen extends StatelessWidget {
                   child: GlassCard(
                     borderColor: AppColors.accent.withValues(alpha: 0.3),
                     gradient: LinearGradient(
-                      colors: [AppColors.accent.withValues(alpha: 0.08), AppColors.surface],
+                      colors: [
+                        AppColors.accent.withValues(alpha: 0.08),
+                        AppColors.surface,
+                      ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
@@ -74,18 +87,30 @@ class AdminDashboardScreen extends StatelessWidget {
                             color: AppColors.accent.withValues(alpha: 0.2),
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: const Icon(Icons.eco_rounded, color: AppColors.accent, size: 22),
+                          child: const Icon(
+                            Icons.eco_rounded,
+                            color: AppColors.accent,
+                            size: 22,
+                          ),
                         ),
                         const SizedBox(width: 12),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('Waste Prevention Active', style: AppTextStyles.labelLarge.copyWith(color: AppColors.accent, fontSize: 13)),
+                              Text(
+                                'Waste Prevention Active',
+                                style: AppTextStyles.labelLarge.copyWith(
+                                  color: AppColors.accent,
+                                  fontSize: 13,
+                                ),
+                              ),
                               const SizedBox(height: 2),
                               Text(
                                 '142 "Not Eating" toggles today → 45 kg food saved → ₹6,750 saved',
-                                style: AppTextStyles.bodySmall.copyWith(fontSize: 11),
+                                style: AppTextStyles.bodySmall.copyWith(
+                                  fontSize: 11,
+                                ),
                               ),
                             ],
                           ),
@@ -104,9 +129,9 @@ class AdminDashboardScreen extends StatelessWidget {
                     children: [
                       Expanded(
                         child: StatCard(
-                          title: 'Scanned Today',
+                          title: 'ID Check-ins',
                           value: '$headcount',
-                          icon: Icons.qr_code_scanner_rounded,
+                          icon: Icons.badge_rounded,
                           color: AppColors.info,
                           subtitle: 'LIVE',
                         ),
@@ -117,8 +142,18 @@ class AdminDashboardScreen extends StatelessWidget {
                           title: 'Occupancy',
                           value: '$occupancy%',
                           icon: Icons.people_alt_rounded,
-                          color: occupancy > 80 ? AppColors.error : occupancy > 50 ? AppColors.warning : AppColors.accent,
-                          subtitle: occupancy > 80 ? 'HIGH' : occupancy > 50 ? 'MODERATE' : 'LOW',
+                          color:
+                              occupancy > 80
+                                  ? AppColors.error
+                                  : occupancy > 50
+                                  ? AppColors.warning
+                                  : AppColors.accent,
+                          subtitle:
+                              occupancy > 80
+                                  ? 'HIGH'
+                                  : occupancy > 50
+                                  ? 'MODERATE'
+                                  : 'LOW',
                         ),
                       ),
                     ],
@@ -169,11 +204,19 @@ class AdminDashboardScreen extends StatelessWidget {
                             touchTooltipData: BarTouchTooltipData(
                               getTooltipColor: (_) => AppColors.surfaceLight,
                               tooltipRoundedRadius: 8,
-                              getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                              getTooltipItem: (
+                                group,
+                                groupIndex,
+                                rod,
+                                rodIndex,
+                              ) {
                                 final data = MockDataService.hourlyFootfall;
                                 return BarTooltipItem(
                                   '${data[group.x.toInt()]['hour']}\n${rod.toY.toInt()} students',
-                                  AppTextStyles.bodySmall.copyWith(color: AppColors.textPrimary, fontSize: 11),
+                                  AppTextStyles.bodySmall.copyWith(
+                                    color: AppColors.textPrimary,
+                                    fontSize: 11,
+                                  ),
                                 );
                               },
                             ),
@@ -185,53 +228,81 @@ class AdminDashboardScreen extends StatelessWidget {
                                 showTitles: true,
                                 getTitlesWidget: (value, meta) {
                                   final data = MockDataService.hourlyFootfall;
-                                  if (value.toInt() >= data.length) return const SizedBox();
+                                  if (value.toInt() >= data.length)
+                                    return const SizedBox();
                                   return Padding(
                                     padding: const EdgeInsets.only(top: 6),
                                     child: Text(
-                                      (data[value.toInt()]['hour'] as String).replaceAll(' ', '\n'),
-                                      style: AppTextStyles.bodySmall.copyWith(fontSize: 8),
+                                      (data[value.toInt()]['hour'] as String)
+                                          .replaceAll(' ', '\n'),
+                                      style: AppTextStyles.bodySmall.copyWith(
+                                        fontSize: 8,
+                                      ),
                                       textAlign: TextAlign.center,
                                     ),
                                   );
                                 },
                               ),
                             ),
-                            leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                            topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                            rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                            leftTitles: const AxisTitles(
+                              sideTitles: SideTitles(showTitles: false),
+                            ),
+                            topTitles: const AxisTitles(
+                              sideTitles: SideTitles(showTitles: false),
+                            ),
+                            rightTitles: const AxisTitles(
+                              sideTitles: SideTitles(showTitles: false),
+                            ),
                           ),
                           gridData: FlGridData(
                             show: true,
                             drawVerticalLine: false,
                             horizontalInterval: 100,
-                            getDrawingHorizontalLine: (value) => FlLine(
-                              color: Colors.white.withValues(alpha: 0.04),
-                              strokeWidth: 1,
-                            ),
+                            getDrawingHorizontalLine:
+                                (value) => FlLine(
+                                  color: Colors.white.withValues(alpha: 0.04),
+                                  strokeWidth: 1,
+                                ),
                           ),
                           borderData: FlBorderData(show: false),
-                          barGroups: MockDataService.hourlyFootfall.asMap().entries.map((entry) {
-                            final val = (entry.value['count'] as int).toDouble();
-                            final isPeak = val > 250;
-                            return BarChartGroupData(
-                              x: entry.key,
-                              barRods: [
-                                BarChartRodData(
-                                  toY: val,
-                                  width: 14,
-                                  borderRadius: const BorderRadius.vertical(top: Radius.circular(6)),
-                                  gradient: LinearGradient(
-                                    colors: isPeak
-                                        ? [AppColors.error, AppColors.warning]
-                                        : [AppColors.accent, AppColors.accentLight],
-                                    begin: Alignment.bottomCenter,
-                                    end: Alignment.topCenter,
-                                  ),
-                                ),
-                              ],
-                            );
-                          }).toList(),
+                          barGroups:
+                              MockDataService.hourlyFootfall
+                                  .asMap()
+                                  .entries
+                                  .map((entry) {
+                                    final val =
+                                        (entry.value['count'] as int)
+                                            .toDouble();
+                                    final isPeak = val > 250;
+                                    return BarChartGroupData(
+                                      x: entry.key,
+                                      barRods: [
+                                        BarChartRodData(
+                                          toY: val,
+                                          width: 14,
+                                          borderRadius:
+                                              const BorderRadius.vertical(
+                                                top: Radius.circular(6),
+                                              ),
+                                          gradient: LinearGradient(
+                                            colors:
+                                                isPeak
+                                                    ? [
+                                                      AppColors.error,
+                                                      AppColors.warning,
+                                                    ]
+                                                    : [
+                                                      AppColors.accent,
+                                                      AppColors.accentLight,
+                                                    ],
+                                            begin: Alignment.bottomCenter,
+                                            end: Alignment.topCenter,
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  })
+                                  .toList(),
                         ),
                         duration: const Duration(milliseconds: 800),
                       ),
@@ -240,46 +311,72 @@ class AdminDashboardScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
 
-                // Recent Scans
-                const SectionHeader(title: 'Recent Scans'),
+                // Recent ID Card Scans
+                const SectionHeader(title: 'Recent ID Scans'),
                 const SizedBox(height: 8),
-                ...MockDataService.recentScans.take(3).map((scan) => Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
-                  child: GlassCard(
-                    padding: const EdgeInsets.all(12),
-                    borderColor: scan.isValid ? AppColors.accent.withValues(alpha: 0.1) : AppColors.error.withValues(alpha: 0.2),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 36, height: 36,
-                          decoration: BoxDecoration(
-                            color: (scan.isValid ? AppColors.accent : AppColors.error).withValues(alpha: 0.15),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Icon(
-                            scan.isValid ? Icons.check_circle_rounded : Icons.cancel_rounded,
-                            color: scan.isValid ? AppColors.accent : AppColors.error,
-                            size: 18,
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                ...MockDataService.recentScans
+                    .take(3)
+                    .map(
+                      (scan) => Padding(
+                        padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
+                        child: GlassCard(
+                          padding: const EdgeInsets.all(12),
+                          borderColor:
+                              scan.isValid
+                                  ? AppColors.accent.withValues(alpha: 0.1)
+                                  : AppColors.error.withValues(alpha: 0.2),
+                          child: Row(
                             children: [
-                              Text(scan.userName, style: AppTextStyles.labelLarge.copyWith(fontSize: 13)),
-                              Text(scan.rollNo, style: AppTextStyles.bodySmall.copyWith(fontSize: 10)),
+                              Container(
+                                width: 36,
+                                height: 36,
+                                decoration: BoxDecoration(
+                                  color: (scan.isValid
+                                          ? AppColors.accent
+                                          : AppColors.error)
+                                      .withValues(alpha: 0.15),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Icon(
+                                  scan.isValid
+                                      ? Icons.check_circle_rounded
+                                      : Icons.cancel_rounded,
+                                  color:
+                                      scan.isValid
+                                          ? AppColors.accent
+                                          : AppColors.error,
+                                  size: 18,
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      scan.userName,
+                                      style: AppTextStyles.labelLarge.copyWith(
+                                        fontSize: 13,
+                                      ),
+                                    ),
+                                    Text(
+                                      'Enrollment No. ${scan.rollNo}',
+                                      style: AppTextStyles.bodySmall.copyWith(
+                                        fontSize: 10,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Text(
+                                '${scan.scanTime.hour}:${scan.scanTime.minute.toString().padLeft(2, '0')}',
+                                style: AppTextStyles.bodySmall,
+                              ),
                             ],
                           ),
                         ),
-                        Text(
-                          '${scan.scanTime.hour}:${scan.scanTime.minute.toString().padLeft(2, '0')}',
-                          style: AppTextStyles.bodySmall,
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
-                )),
                 const SizedBox(height: 100),
               ],
             ),
