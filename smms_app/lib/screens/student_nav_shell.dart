@@ -30,49 +30,34 @@ class _StudentNavShellState extends State<StudentNavShell> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFF0F1724), Color(0xFF111B2D)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
-        child: IndexedStack(index: _currentIndex, children: _pages),
+      body: IndexedStack(
+        index: _currentIndex,
+        children: _pages,
       ),
       bottomNavigationBar: Container(
-        margin: const EdgeInsets.fromLTRB(16, 0, 16, 14),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         decoration: BoxDecoration(
           color: AppColors.surface,
-          borderRadius: BorderRadius.circular(28),
+          border: Border(
+            top: BorderSide(color: Colors.white.withValues(alpha: 0.04), width: 1),
+          ),
           boxShadow: [
-            BoxShadow(
-              color: AppColors.shadowLight,
-              blurRadius: 18,
-              offset: const Offset(-6, -6),
-              spreadRadius: -4,
-            ),
-            BoxShadow(
-              color: AppColors.shadowDark,
-              blurRadius: 18,
-              offset: const Offset(6, 6),
-              spreadRadius: -4,
-            ),
+            BoxShadow(color: Colors.black.withValues(alpha: 0.3), blurRadius: 20, offset: const Offset(0, -5)),
           ],
         ),
         child: SafeArea(
-          top: false,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _navItem(Icons.home_rounded, 'Home', 0),
-              _navItem(Icons.restaurant_menu_rounded, 'Menu', 1),
-              _navItem(Icons.star_rounded, 'Review', 2),
-              _navItem(Icons.calendar_month_rounded, 'Leave', 3),
-              _navItem(Icons.how_to_vote_rounded, 'Vote', 4),
-              _navItem(Icons.person_rounded, 'Profile', 5),
-            ],
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _navItem(Icons.home_rounded, 'Home', 0),
+                _navItem(Icons.restaurant_menu_rounded, 'Menu', 1),
+                _navItem(Icons.star_rounded, 'Review', 2),
+                _navItem(Icons.calendar_month_rounded, 'Leave', 3),
+                _navItem(Icons.how_to_vote_rounded, 'Vote', 4),
+                _navItem(Icons.person_rounded, 'Profile', 5),
+              ],
+            ),
           ),
         ),
       ),
@@ -86,40 +71,20 @@ class _StudentNavShellState extends State<StudentNavShell> {
       behavior: HitTestBehavior.opaque,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
-          color: isActive ? AppColors.surfaceRaised : Colors.transparent,
-          borderRadius: BorderRadius.circular(18),
-          boxShadow: isActive
-              ? [
-                  BoxShadow(
-                    color: AppColors.shadowLight,
-                    blurRadius: 10,
-                    offset: const Offset(-4, -4),
-                    spreadRadius: -3,
-                  ),
-                  BoxShadow(
-                    color: AppColors.shadowDark,
-                    blurRadius: 10,
-                    offset: const Offset(4, 4),
-                    spreadRadius: -3,
-                  ),
-                ]
-              : [],
+          color: isActive ? AppColors.accent.withValues(alpha: 0.12) : Colors.transparent,
+          borderRadius: BorderRadius.circular(12),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              icon,
-              color: isActive ? AppColors.accentLight : AppColors.textMuted,
-              size: 22,
-            ),
+            Icon(icon, color: isActive ? AppColors.accent : AppColors.textMuted, size: 22),
             const SizedBox(height: 2),
             Text(
               label,
               style: AppTextStyles.bodySmall.copyWith(
-                color: isActive ? Colors.white : AppColors.textMuted,
+                color: isActive ? AppColors.accent : AppColors.textMuted,
                 fontSize: 9,
                 fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
               ),

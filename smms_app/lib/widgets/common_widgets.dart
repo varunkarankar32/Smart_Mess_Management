@@ -24,181 +24,21 @@ class GlassCard extends StatelessWidget {
     return Container(
       padding: padding,
       decoration: BoxDecoration(
-        color: gradient == null ? AppColors.surface : null,
-        gradient:
-            gradient ??
-            const LinearGradient(
-              colors: [AppColors.surfaceRaised, AppColors.surface],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
+        gradient: gradient ?? AppColors.cardGradient,
         borderRadius: BorderRadius.circular(borderRadius),
         border: Border.all(
-          color: borderColor ?? Colors.white.withValues(alpha: 0.04),
+          color: borderColor ?? Colors.white.withValues(alpha: 0.06),
           width: 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.shadowLight,
-            blurRadius: 18,
-            offset: const Offset(-8, -8),
-            spreadRadius: -3,
-          ),
-          BoxShadow(
-            color: AppColors.shadowDark,
-            blurRadius: 18,
-            offset: const Offset(8, 8),
-            spreadRadius: -3,
+            color: Colors.black.withValues(alpha: 0.2),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
           ),
         ],
       ),
       child: child,
-    );
-  }
-}
-
-class NeumorphicSection extends StatelessWidget {
-  final Widget child;
-  final EdgeInsets padding;
-  final double borderRadius;
-  final Color? borderColor;
-  final LinearGradient? gradient;
-
-  const NeumorphicSection({
-    super.key,
-    required this.child,
-    this.padding = const EdgeInsets.all(16),
-    this.borderRadius = 24,
-    this.borderColor,
-    this.gradient,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: padding,
-      decoration: BoxDecoration(
-        gradient:
-            gradient ??
-            const LinearGradient(
-              colors: [AppColors.surfaceRaised, AppColors.surface],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-        borderRadius: BorderRadius.circular(borderRadius),
-        border: Border.all(
-          color: borderColor ?? Colors.white.withValues(alpha: 0.04),
-          width: 1,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.shadowLight,
-            blurRadius: 20,
-            offset: const Offset(-8, -8),
-            spreadRadius: -4,
-          ),
-          BoxShadow(
-            color: AppColors.shadowDark,
-            blurRadius: 20,
-            offset: const Offset(8, 8),
-            spreadRadius: -4,
-          ),
-        ],
-      ),
-      child: child,
-    );
-  }
-}
-
-class NeuIconTile extends StatelessWidget {
-  final IconData icon;
-  final Color iconColor;
-  final VoidCallback? onTap;
-  final EdgeInsets padding;
-
-  const NeuIconTile({
-    super.key,
-    required this.icon,
-    this.iconColor = AppColors.accentLight,
-    this.onTap,
-    this.padding = const EdgeInsets.all(10),
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final tile = Container(
-      padding: padding,
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [AppColors.surfaceRaised, AppColors.surface],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.shadowLight,
-            blurRadius: 10,
-            offset: const Offset(-4, -4),
-            spreadRadius: -3,
-          ),
-          BoxShadow(
-            color: AppColors.shadowDark,
-            blurRadius: 10,
-            offset: const Offset(4, 4),
-            spreadRadius: -3,
-          ),
-        ],
-      ),
-      child: Icon(icon, color: iconColor, size: 22),
-    );
-
-    if (onTap == null) return tile;
-    return GestureDetector(onTap: onTap, child: tile);
-  }
-}
-
-class NeuPill extends StatelessWidget {
-  final String label;
-  final Color color;
-
-  const NeuPill({
-    super.key,
-    required this.label,
-    this.color = AppColors.accentLight,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [AppColors.surfaceRaised, AppColors.surface],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: color.withValues(alpha: 0.2)),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.shadowLight,
-            blurRadius: 8,
-            offset: const Offset(-3, -3),
-            spreadRadius: -2,
-          ),
-          BoxShadow(
-            color: AppColors.shadowDark,
-            blurRadius: 8,
-            offset: const Offset(3, 3),
-            spreadRadius: -2,
-          ),
-        ],
-      ),
-      child: Text(
-        label,
-        style: AppTextStyles.labelSmall.copyWith(color: color, fontSize: 10),
-      ),
     );
   }
 }
@@ -239,32 +79,17 @@ class StatCard extends StatelessWidget {
               const Spacer(),
               if (subtitle != null)
                 Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 3,
-                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                   decoration: BoxDecoration(
                     color: color.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Text(
-                    subtitle!,
-                    style: AppTextStyles.bodySmall.copyWith(
-                      color: color,
-                      fontSize: 10,
-                    ),
-                  ),
+                  child: Text(subtitle!, style: AppTextStyles.bodySmall.copyWith(color: color, fontSize: 10)),
                 ),
             ],
           ),
           const SizedBox(height: 12),
-          Text(
-            value,
-            style: AppTextStyles.statNumber.copyWith(
-              color: color,
-              fontSize: 26,
-            ),
-          ),
+          Text(value, style: AppTextStyles.statNumber.copyWith(color: color, fontSize: 26)),
           const SizedBox(height: 4),
           Text(title, style: AppTextStyles.bodySmall),
         ],
@@ -281,8 +106,7 @@ class CrowdMeterGauge extends StatefulWidget {
   State<CrowdMeterGauge> createState() => _CrowdMeterGaugeState();
 }
 
-class _CrowdMeterGaugeState extends State<CrowdMeterGauge>
-    with SingleTickerProviderStateMixin {
+class _CrowdMeterGaugeState extends State<CrowdMeterGauge> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
 
@@ -293,10 +117,8 @@ class _CrowdMeterGaugeState extends State<CrowdMeterGauge>
       duration: const Duration(milliseconds: 1500),
       vsync: this,
     );
-    _animation = Tween<double>(
-      begin: 0,
-      end: widget.occupancy / 100,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
+    _animation = Tween<double>(begin: 0, end: widget.occupancy / 100)
+        .animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
     _controller.forward();
   }
 
@@ -338,10 +160,7 @@ class _CrowdMeterGaugeState extends State<CrowdMeterGauge>
                   Text('Live Crowd Meter', style: AppTextStyles.titleMedium),
                   const Spacer(),
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 4,
-                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
                       color: color.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(20),
@@ -350,22 +169,11 @@ class _CrowdMeterGaugeState extends State<CrowdMeterGauge>
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Container(
-                          width: 6,
-                          height: 6,
-                          decoration: BoxDecoration(
-                            color: color,
-                            shape: BoxShape.circle,
-                          ),
+                          width: 6, height: 6,
+                          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
                         ),
                         const SizedBox(width: 4),
-                        Text(
-                          'LIVE',
-                          style: AppTextStyles.labelSmall.copyWith(
-                            color: color,
-                            fontSize: 10,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
+                        Text('LIVE', style: AppTextStyles.labelSmall.copyWith(color: color, fontSize: 10, fontWeight: FontWeight.w700)),
                       ],
                     ),
                   ),
@@ -383,15 +191,9 @@ class _CrowdMeterGaugeState extends State<CrowdMeterGauge>
                       children: [
                         Text(
                           '${(_animation.value * 100).toInt()}%',
-                          style: AppTextStyles.displayMedium.copyWith(
-                            color: color,
-                            fontSize: 32,
-                          ),
+                          style: AppTextStyles.displayMedium.copyWith(color: color, fontSize: 32),
                         ),
-                        Text(
-                          _getLabel(_animation.value),
-                          style: AppTextStyles.bodySmall.copyWith(color: color),
-                        ),
+                        Text(_getLabel(_animation.value), style: AppTextStyles.bodySmall.copyWith(color: color)),
                       ],
                     ),
                   ),
@@ -424,13 +226,7 @@ class _GaugePainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 12
       ..strokeCap = StrokeCap.round;
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius),
-      startAngle,
-      totalSweep,
-      false,
-      bgPaint,
-    );
+    canvas.drawArc(Rect.fromCircle(center: center, radius: radius), startAngle, totalSweep, false, bgPaint);
 
     // Value arc
     final valuePaint = Paint()
@@ -438,13 +234,7 @@ class _GaugePainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 12
       ..strokeCap = StrokeCap.round;
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius),
-      startAngle,
-      totalSweep * value,
-      false,
-      valuePaint,
-    );
+    canvas.drawArc(Rect.fromCircle(center: center, radius: radius), startAngle, totalSweep * value, false, valuePaint);
 
     // Glow effect
     final glowPaint = Paint()
@@ -453,13 +243,7 @@ class _GaugePainter extends CustomPainter {
       ..strokeWidth = 20
       ..strokeCap = StrokeCap.round
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8);
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius),
-      startAngle,
-      totalSweep * value,
-      false,
-      glowPaint,
-    );
+    canvas.drawArc(Rect.fromCircle(center: center, radius: radius), startAngle, totalSweep * value, false, glowPaint);
   }
 
   @override
@@ -495,12 +279,7 @@ class MenuCard extends StatelessWidget {
           children: [
             Text(emoji, style: const TextStyle(fontSize: 32)),
             const SizedBox(height: 8),
-            Text(
-              name,
-              style: AppTextStyles.labelLarge,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
+            Text(name, style: AppTextStyles.labelLarge, maxLines: 2, overflow: TextOverflow.ellipsis),
             const SizedBox(height: 4),
             if (calories > 0)
               Text('$calories kcal', style: AppTextStyles.bodySmall),
@@ -510,39 +289,21 @@ class MenuCard extends StatelessWidget {
                 children: [
                   Icon(Icons.star_rounded, color: AppColors.warning, size: 14),
                   const SizedBox(width: 2),
-                  Text(
-                    rating.toStringAsFixed(1),
-                    style: AppTextStyles.bodySmall.copyWith(
-                      color: AppColors.warning,
-                    ),
-                  ),
+                  Text(rating.toStringAsFixed(1), style: AppTextStyles.bodySmall.copyWith(color: AppColors.warning)),
                 ],
               ),
             if (allergens.isNotEmpty) ...[
               const SizedBox(height: 6),
               Wrap(
                 spacing: 4,
-                children: allergens
-                    .map(
-                      (a) => Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 6,
-                          vertical: 2,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.error.withValues(alpha: 0.15),
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        child: Text(
-                          a,
-                          style: AppTextStyles.bodySmall.copyWith(
-                            color: AppColors.error,
-                            fontSize: 9,
-                          ),
-                        ),
-                      ),
-                    )
-                    .toList(),
+                children: allergens.map((a) => Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: AppColors.error.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Text(a, style: AppTextStyles.bodySmall.copyWith(color: AppColors.error, fontSize: 9)),
+                )).toList(),
               ),
             ],
           ],
@@ -576,35 +337,20 @@ class AccentButton extends StatelessWidget {
           vertical: isLarge ? 16 : 12,
         ),
         decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [AppColors.surfaceRaised, AppColors.surface],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: AppColors.accent.withValues(alpha: 0.22),
-            width: 1,
-          ),
+          gradient: AppColors.accentGradient,
+          borderRadius: BorderRadius.circular(14),
           boxShadow: [
             BoxShadow(
-              color: AppColors.shadowLight,
+              color: AppColors.accent.withValues(alpha: 0.3),
               blurRadius: 16,
-              offset: const Offset(-6, -6),
-              spreadRadius: -2,
-            ),
-            BoxShadow(
-              color: AppColors.shadowDark,
-              blurRadius: 16,
-              offset: const Offset(6, 6),
-              spreadRadius: -2,
+              offset: const Offset(0, 6),
             ),
           ],
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, color: AppColors.accentLight, size: isLarge ? 24 : 20),
+            Icon(icon, color: Colors.white, size: isLarge ? 24 : 20),
             const SizedBox(width: 8),
             Text(
               label,
@@ -660,17 +406,13 @@ class PulsingDot extends StatefulWidget {
   State<PulsingDot> createState() => _PulsingDotState();
 }
 
-class _PulsingDotState extends State<PulsingDot>
-    with SingleTickerProviderStateMixin {
+class _PulsingDotState extends State<PulsingDot> with SingleTickerProviderStateMixin {
   late AnimationController _ctrl;
 
   @override
   void initState() {
     super.initState();
-    _ctrl = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 1),
-    )..repeat(reverse: true);
+    _ctrl = AnimationController(vsync: this, duration: const Duration(seconds: 1))..repeat(reverse: true);
   }
 
   @override
@@ -690,10 +432,7 @@ class _PulsingDotState extends State<PulsingDot>
           color: widget.color.withValues(alpha: 0.6 + _ctrl.value * 0.4),
           shape: BoxShape.circle,
           boxShadow: [
-            BoxShadow(
-              color: widget.color.withValues(alpha: 0.4),
-              blurRadius: 8 + _ctrl.value * 4,
-            ),
+            BoxShadow(color: widget.color.withValues(alpha: 0.4), blurRadius: 8 + _ctrl.value * 4),
           ],
         ),
       ),

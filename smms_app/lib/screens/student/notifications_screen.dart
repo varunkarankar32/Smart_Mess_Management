@@ -9,27 +9,19 @@ class NotificationsScreen extends StatelessWidget {
 
   IconData _getIcon(String type) {
     switch (type) {
-      case 'menu':
-        return Icons.restaurant_menu_rounded;
-      case 'crowd':
-        return Icons.people_alt_rounded;
-      case 'reward':
-        return Icons.stars_rounded;
-      default:
-        return Icons.info_outline_rounded;
+      case 'menu': return Icons.restaurant_menu_rounded;
+      case 'crowd': return Icons.people_alt_rounded;
+      case 'reward': return Icons.stars_rounded;
+      default: return Icons.info_outline_rounded;
     }
   }
 
   Color _getColor(String type) {
     switch (type) {
-      case 'menu':
-        return AppColors.accent;
-      case 'crowd':
-        return AppColors.error;
-      case 'reward':
-        return AppColors.warning;
-      default:
-        return AppColors.info;
+      case 'menu': return AppColors.accent;
+      case 'crowd': return AppColors.error;
+      case 'reward': return AppColors.warning;
+      default: return AppColors.info;
     }
   }
 
@@ -47,9 +39,9 @@ class NotificationsScreen extends StatelessWidget {
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFF0F1724), Color(0xFF111B2D), Color(0xFF0F1724)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+            colors: [Color(0xFF0A0E1A), Color(0xFF0F172A)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
         ),
         child: SafeArea(
@@ -57,36 +49,18 @@ class NotificationsScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
+                padding: const EdgeInsets.fromLTRB(8, 8, 20, 0),
                 child: Row(
                   children: [
-                    NeuIconTile(
-                      icon: Icons.arrow_back_ios_rounded,
-                      iconColor: AppColors.textSecondary,
-                      onTap: () => Navigator.pop(context),
+                    IconButton(
+                      icon: const Icon(Icons.arrow_back_ios_rounded, color: AppColors.textSecondary),
+                      onPressed: () => Navigator.pop(context),
                     ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Text(
-                        'Notifications',
-                        style: AppTextStyles.headlineLarge,
-                      ),
-                    ),
+                    Text('Notifications', style: AppTextStyles.headlineLarge),
                     const Spacer(),
-                    const NeuPill(label: 'Inbox'),
-                    const SizedBox(width: 8),
-                    NeumorphicSection(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 6,
-                      ),
-                      borderRadius: 12,
-                      child: Text(
-                        'Clear All',
-                        style: AppTextStyles.bodySmall.copyWith(
-                          color: Colors.white,
-                        ),
-                      ),
+                    TextButton(
+                      onPressed: () {},
+                      child: Text('Clear All', style: AppTextStyles.bodySmall.copyWith(color: AppColors.accent)),
                     ),
                   ],
                 ),
@@ -102,41 +76,29 @@ class NotificationsScreen extends StatelessWidget {
                     final color = _getColor(n.type);
                     return Container(
                       margin: const EdgeInsets.only(bottom: 10),
-                      child: NeumorphicSection(
-                        borderColor: color.withValues(alpha: 0.12),
+                      child: GlassCard(
+                        borderColor: color.withValues(alpha: 0.1),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            NeuIconTile(
-                              icon: _getIcon(n.type),
-                              iconColor: color,
+                            Container(
                               padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: color.withValues(alpha: 0.12),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Icon(_getIcon(n.type), color: color, size: 20),
                             ),
                             const SizedBox(width: 12),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    n.title,
-                                    style: AppTextStyles.labelLarge.copyWith(
-                                      fontSize: 13,
-                                    ),
-                                  ),
+                                  Text(n.title, style: AppTextStyles.labelLarge.copyWith(fontSize: 13)),
                                   const SizedBox(height: 4),
-                                  Text(
-                                    n.body,
-                                    style: AppTextStyles.bodySmall,
-                                    maxLines: 3,
-                                  ),
+                                  Text(n.body, style: AppTextStyles.bodySmall, maxLines: 3),
                                   const SizedBox(height: 6),
-                                  Text(
-                                    _timeAgo(n.timestamp),
-                                    style: AppTextStyles.bodySmall.copyWith(
-                                      fontSize: 10,
-                                      color: AppColors.textMuted,
-                                    ),
-                                  ),
+                                  Text(_timeAgo(n.timestamp), style: AppTextStyles.bodySmall.copyWith(fontSize: 10, color: AppColors.textMuted)),
                                 ],
                               ),
                             ),

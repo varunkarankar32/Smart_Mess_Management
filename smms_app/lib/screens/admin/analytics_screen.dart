@@ -17,9 +17,9 @@ class AnalyticsScreen extends StatelessWidget {
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFF0F1724), Color(0xFF111B2D), Color(0xFF0F1724)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+            colors: [Color(0xFF0A0E1A), Color(0xFF0F172A)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
         ),
         child: SafeArea(
@@ -32,34 +32,20 @@ class AnalyticsScreen extends StatelessWidget {
                   padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
                   child: Row(
                     children: [
-                      Expanded(
-                        child: Text(
-                          'Analytics',
-                          style: AppTextStyles.headlineLarge,
-                        ),
-                      ),
+                      Text('Analytics', style: AppTextStyles.headlineLarge),
                       const Spacer(),
-                      NeumorphicSection(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 6,
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: AppColors.accent.withValues(alpha: 0.15),
+                          borderRadius: BorderRadius.circular(10),
                         ),
-                        borderRadius: 12,
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(
-                              Icons.download_rounded,
-                              color: AppColors.accentLight,
-                              size: 14,
-                            ),
+                            const Icon(Icons.download_rounded, color: AppColors.accent, size: 14),
                             const SizedBox(width: 4),
-                            Text(
-                              'Export',
-                              style: AppTextStyles.labelSmall.copyWith(
-                                color: Colors.white,
-                              ),
-                            ),
+                            Text('Export', style: AppTextStyles.labelSmall.copyWith(color: AppColors.accent)),
                           ],
                         ),
                       ),
@@ -93,86 +79,46 @@ class AnalyticsScreen extends StatelessWidget {
                               sideTitles: SideTitles(
                                 showTitles: true,
                                 getTitlesWidget: (value, meta) {
-                                  const days = [
-                                    'Mon',
-                                    'Tue',
-                                    'Wed',
-                                    'Thu',
-                                    'Fri',
-                                    'Sat',
-                                    'Sun',
-                                  ];
-                                  if (value.toInt() >= days.length ||
-                                      value.toInt() < 0)
-                                    return const SizedBox();
+                                  const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+                                  if (value.toInt() >= days.length || value.toInt() < 0) return const SizedBox();
                                   return Padding(
                                     padding: const EdgeInsets.only(top: 6),
-                                    child: Text(
-                                      days[value.toInt()],
-                                      style: AppTextStyles.bodySmall.copyWith(
-                                        fontSize: 10,
-                                      ),
-                                    ),
+                                    child: Text(days[value.toInt()], style: AppTextStyles.bodySmall.copyWith(fontSize: 10)),
                                   );
                                 },
                                 interval: 1,
                               ),
                             ),
-                            leftTitles: const AxisTitles(
-                              sideTitles: SideTitles(showTitles: false),
-                            ),
-                            topTitles: const AxisTitles(
-                              sideTitles: SideTitles(showTitles: false),
-                            ),
-                            rightTitles: const AxisTitles(
-                              sideTitles: SideTitles(showTitles: false),
-                            ),
+                            leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                            topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                            rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
                           ),
                           borderData: FlBorderData(show: false),
-                          minX: 0,
-                          maxX: 6,
-                          minY: 0,
-                          maxY: 500,
+                          minX: 0, maxX: 6, minY: 0, maxY: 500,
                           lineBarsData: [
                             // Predicted
                             LineChartBarData(
                               spots: const [
-                                FlSpot(0, 340),
-                                FlSpot(1, 380),
-                                FlSpot(2, 320),
-                                FlSpot(3, 400),
-                                FlSpot(4, 280),
-                                FlSpot(5, 200),
-                                FlSpot(6, 250),
+                                FlSpot(0, 340), FlSpot(1, 380), FlSpot(2, 320),
+                                FlSpot(3, 400), FlSpot(4, 280), FlSpot(5, 200), FlSpot(6, 250),
                               ],
                               isCurved: true,
                               color: AppColors.info,
                               barWidth: 2,
                               dotData: const FlDotData(show: false),
-                              belowBarData: BarAreaData(
-                                show: true,
-                                color: AppColors.info.withValues(alpha: 0.08),
-                              ),
+                              belowBarData: BarAreaData(show: true, color: AppColors.info.withValues(alpha: 0.08)),
                             ),
                             // Actual
                             LineChartBarData(
                               spots: const [
-                                FlSpot(0, 320),
-                                FlSpot(1, 390),
-                                FlSpot(2, 310),
-                                FlSpot(3, 380),
-                                FlSpot(4, 300),
-                                FlSpot(5, 180),
-                                FlSpot(6, 260),
+                                FlSpot(0, 320), FlSpot(1, 390), FlSpot(2, 310),
+                                FlSpot(3, 380), FlSpot(4, 300), FlSpot(5, 180), FlSpot(6, 260),
                               ],
                               isCurved: true,
                               color: AppColors.accent,
                               barWidth: 3,
                               dotData: const FlDotData(show: false),
-                              belowBarData: BarAreaData(
-                                show: true,
-                                color: AppColors.accent.withValues(alpha: 0.08),
-                              ),
+                              belowBarData: BarAreaData(show: true, color: AppColors.accent.withValues(alpha: 0.08)),
                             ),
                           ],
                         ),
@@ -185,33 +131,13 @@ class AnalyticsScreen extends StatelessWidget {
                   padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
                   child: Row(
                     children: [
-                      Container(
-                        width: 12,
-                        height: 3,
-                        decoration: BoxDecoration(
-                          color: AppColors.info,
-                          borderRadius: BorderRadius.circular(2),
-                        ),
-                      ),
+                      Container(width: 12, height: 3, decoration: BoxDecoration(color: AppColors.info, borderRadius: BorderRadius.circular(2))),
                       const SizedBox(width: 6),
-                      Text(
-                        'Predicted',
-                        style: AppTextStyles.bodySmall.copyWith(fontSize: 10),
-                      ),
+                      Text('Predicted', style: AppTextStyles.bodySmall.copyWith(fontSize: 10)),
                       const SizedBox(width: 16),
-                      Container(
-                        width: 12,
-                        height: 3,
-                        decoration: BoxDecoration(
-                          color: AppColors.accent,
-                          borderRadius: BorderRadius.circular(2),
-                        ),
-                      ),
+                      Container(width: 12, height: 3, decoration: BoxDecoration(color: AppColors.accent, borderRadius: BorderRadius.circular(2))),
                       const SizedBox(width: 6),
-                      Text(
-                        'Actual',
-                        style: AppTextStyles.bodySmall.copyWith(fontSize: 10),
-                      ),
+                      Text('Actual', style: AppTextStyles.bodySmall.copyWith(fontSize: 10)),
                     ],
                   ),
                 ),
@@ -236,30 +162,17 @@ class AnalyticsScreen extends StatelessWidget {
                               sideTitles: SideTitles(
                                 showTitles: true,
                                 getTitlesWidget: (value, meta) {
-                                  if (value.toInt() < 0 ||
-                                      value.toInt() >= wasteData.length)
-                                    return const SizedBox();
+                                  if (value.toInt() < 0 || value.toInt() >= wasteData.length) return const SizedBox();
                                   return Padding(
                                     padding: const EdgeInsets.only(top: 4),
-                                    child: Text(
-                                      wasteData[value.toInt()]['day'] as String,
-                                      style: AppTextStyles.bodySmall.copyWith(
-                                        fontSize: 10,
-                                      ),
-                                    ),
+                                    child: Text(wasteData[value.toInt()]['day'] as String, style: AppTextStyles.bodySmall.copyWith(fontSize: 10)),
                                   );
                                 },
                               ),
                             ),
-                            leftTitles: const AxisTitles(
-                              sideTitles: SideTitles(showTitles: false),
-                            ),
-                            topTitles: const AxisTitles(
-                              sideTitles: SideTitles(showTitles: false),
-                            ),
-                            rightTitles: const AxisTitles(
-                              sideTitles: SideTitles(showTitles: false),
-                            ),
+                            leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                            topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                            rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
                           ),
                           gridData: const FlGridData(show: false),
                           borderData: FlBorderData(show: false),
@@ -268,24 +181,16 @@ class AnalyticsScreen extends StatelessWidget {
                               x: entry.key,
                               barRods: [
                                 BarChartRodData(
-                                  toY: (entry.value['wasteKg'] as int)
-                                      .toDouble(),
+                                  toY: (entry.value['wasteKg'] as int).toDouble(),
                                   color: AppColors.error.withValues(alpha: 0.7),
                                   width: 8,
-                                  borderRadius: const BorderRadius.vertical(
-                                    top: Radius.circular(4),
-                                  ),
+                                  borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
                                 ),
                                 BarChartRodData(
-                                  toY: (entry.value['savedKg'] as int)
-                                      .toDouble(),
-                                  color: AppColors.accent.withValues(
-                                    alpha: 0.7,
-                                  ),
+                                  toY: (entry.value['savedKg'] as int).toDouble(),
+                                  color: AppColors.accent.withValues(alpha: 0.7),
                                   width: 8,
-                                  borderRadius: const BorderRadius.vertical(
-                                    top: Radius.circular(4),
-                                  ),
+                                  borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
                                 ),
                               ],
                             );
@@ -300,33 +205,13 @@ class AnalyticsScreen extends StatelessWidget {
                   padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
                   child: Row(
                     children: [
-                      Container(
-                        width: 12,
-                        height: 8,
-                        decoration: BoxDecoration(
-                          color: AppColors.error.withValues(alpha: 0.7),
-                          borderRadius: BorderRadius.circular(2),
-                        ),
-                      ),
+                      Container(width: 12, height: 8, decoration: BoxDecoration(color: AppColors.error.withValues(alpha: 0.7), borderRadius: BorderRadius.circular(2))),
                       const SizedBox(width: 6),
-                      Text(
-                        'Wasted (kg)',
-                        style: AppTextStyles.bodySmall.copyWith(fontSize: 10),
-                      ),
+                      Text('Wasted (kg)', style: AppTextStyles.bodySmall.copyWith(fontSize: 10)),
                       const SizedBox(width: 16),
-                      Container(
-                        width: 12,
-                        height: 8,
-                        decoration: BoxDecoration(
-                          color: AppColors.accent.withValues(alpha: 0.7),
-                          borderRadius: BorderRadius.circular(2),
-                        ),
-                      ),
+                      Container(width: 12, height: 8, decoration: BoxDecoration(color: AppColors.accent.withValues(alpha: 0.7), borderRadius: BorderRadius.circular(2))),
                       const SizedBox(width: 6),
-                      Text(
-                        'Saved (kg)',
-                        style: AppTextStyles.bodySmall.copyWith(fontSize: 10),
-                      ),
+                      Text('Saved (kg)', style: AppTextStyles.bodySmall.copyWith(fontSize: 10)),
                     ],
                   ),
                 ),
@@ -338,62 +223,34 @@ class AnalyticsScreen extends StatelessWidget {
                 ...events.map((e) {
                   final date = e['date'] as DateTime;
                   final modifier = e['modifier'] as double;
-                  final color = modifier > 1.0
-                      ? AppColors.error
-                      : modifier < 0.5
-                      ? AppColors.info
-                      : AppColors.warning;
+                  final color = modifier > 1.0 ? AppColors.error : modifier < 0.5 ? AppColors.info : AppColors.warning;
                   return Padding(
                     padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
-                    child: NeumorphicSection(
+                    child: GlassCard(
                       padding: const EdgeInsets.all(12),
                       borderColor: color.withValues(alpha: 0.15),
                       child: Row(
                         children: [
-                          Text(
-                            e['icon'] as String,
-                            style: const TextStyle(fontSize: 24),
-                          ),
+                          Text(e['icon'] as String, style: const TextStyle(fontSize: 24)),
                           const SizedBox(width: 12),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  e['event'] as String,
-                                  style: AppTextStyles.labelLarge.copyWith(
-                                    fontSize: 13,
-                                  ),
-                                ),
-                                Text(
-                                  '${date.day}/${date.month} • Modifier: ${modifier}x',
-                                  style: AppTextStyles.bodySmall.copyWith(
-                                    fontSize: 11,
-                                  ),
-                                ),
+                                Text(e['event'] as String, style: AppTextStyles.labelLarge.copyWith(fontSize: 13)),
+                                Text('${date.day}/${date.month} • Modifier: ${modifier}x', style: AppTextStyles.bodySmall.copyWith(fontSize: 11)),
                               ],
                             ),
                           ),
                           Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 4,
-                            ),
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                             decoration: BoxDecoration(
                               color: color.withValues(alpha: 0.12),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(
-                              modifier > 1.0
-                                  ? '↑ HIGH'
-                                  : modifier < 0.5
-                                  ? '↓ LOW'
-                                  : '~ AVG',
-                              style: AppTextStyles.labelSmall.copyWith(
-                                color: color,
-                                fontWeight: FontWeight.w700,
-                                fontSize: 10,
-                              ),
+                              modifier > 1.0 ? '↑ HIGH' : modifier < 0.5 ? '↓ LOW' : '~ AVG',
+                              style: AppTextStyles.labelSmall.copyWith(color: color, fontWeight: FontWeight.w700, fontSize: 10),
                             ),
                           ),
                         ],

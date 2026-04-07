@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_text_styles.dart';
-import '../widgets/common_widgets.dart';
 import 'admin/admin_dashboard_screen.dart';
 import 'admin/qr_scanner_screen.dart';
 import 'admin/menu_management_screen.dart';
@@ -35,48 +34,33 @@ class _AdminNavShellState extends State<AdminNavShell> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFF0F1724), Color(0xFF111B2D)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
-        child: IndexedStack(index: _currentIndex, children: _pages),
+      body: IndexedStack(
+        index: _currentIndex,
+        children: _pages,
       ),
       bottomNavigationBar: Container(
-        margin: const EdgeInsets.fromLTRB(16, 0, 16, 14),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         decoration: BoxDecoration(
           color: AppColors.surface,
-          borderRadius: BorderRadius.circular(28),
+          border: Border(
+            top: BorderSide(color: Colors.white.withValues(alpha: 0.04), width: 1),
+          ),
           boxShadow: [
-            BoxShadow(
-              color: AppColors.shadowLight,
-              blurRadius: 18,
-              offset: const Offset(-6, -6),
-              spreadRadius: -4,
-            ),
-            BoxShadow(
-              color: AppColors.shadowDark,
-              blurRadius: 18,
-              offset: const Offset(6, 6),
-              spreadRadius: -4,
-            ),
+            BoxShadow(color: Colors.black.withValues(alpha: 0.3), blurRadius: 20, offset: const Offset(0, -5)),
           ],
         ),
         child: SafeArea(
-          top: false,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _navItem(Icons.dashboard_rounded, 'Dashboard', 0),
-              _navItem(Icons.qr_code_scanner_rounded, 'Scanner', 1),
-              _navItem(Icons.menu_book_rounded, 'Menu', 2),
-              _navItem(Icons.analytics_rounded, 'Analytics', 3),
-              _navItem(Icons.more_horiz_rounded, 'More', 4),
-            ],
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _navItem(Icons.dashboard_rounded, 'Dashboard', 0),
+                _navItem(Icons.qr_code_scanner_rounded, 'Scanner', 1),
+                _navItem(Icons.menu_book_rounded, 'Menu', 2),
+                _navItem(Icons.analytics_rounded, 'Analytics', 3),
+                _navItem(Icons.more_horiz_rounded, 'More', 4),
+              ],
+            ),
           ),
         ),
       ),
@@ -90,40 +74,20 @@ class _AdminNavShellState extends State<AdminNavShell> {
       behavior: HitTestBehavior.opaque,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
         decoration: BoxDecoration(
-          color: isActive ? AppColors.surfaceRaised : Colors.transparent,
-          borderRadius: BorderRadius.circular(18),
-          boxShadow: isActive
-              ? [
-                  BoxShadow(
-                    color: AppColors.shadowLight,
-                    blurRadius: 10,
-                    offset: const Offset(-4, -4),
-                    spreadRadius: -3,
-                  ),
-                  BoxShadow(
-                    color: AppColors.shadowDark,
-                    blurRadius: 10,
-                    offset: const Offset(4, 4),
-                    spreadRadius: -3,
-                  ),
-                ]
-              : [],
+          color: isActive ? AppColors.accent.withValues(alpha: 0.12) : Colors.transparent,
+          borderRadius: BorderRadius.circular(12),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              icon,
-              color: isActive ? AppColors.accentLight : AppColors.textMuted,
-              size: 22,
-            ),
+            Icon(icon, color: isActive ? AppColors.accent : AppColors.textMuted, size: 22),
             const SizedBox(height: 2),
             Text(
               label,
               style: AppTextStyles.bodySmall.copyWith(
-                color: isActive ? Colors.white : AppColors.textMuted,
+                color: isActive ? AppColors.accent : AppColors.textMuted,
                 fontSize: 9,
                 fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
               ),
@@ -144,9 +108,9 @@ class _AdminMoreScreen extends StatelessWidget {
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFF0F1724), Color(0xFF111B2D), Color(0xFF0F1724)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+            colors: [Color(0xFF0A0E1A), Color(0xFF0F172A)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
         ),
         child: SafeArea(
@@ -157,87 +121,20 @@ class _AdminMoreScreen extends StatelessWidget {
               children: [
                 Padding(
                   padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          'More Tools',
-                          style: AppTextStyles.headlineLarge,
-                        ),
-                      ),
-                      const NeuPill(label: 'Ops Hub'),
-                    ],
-                  ),
+                  child: Text('More Tools', style: AppTextStyles.headlineLarge),
                 ),
                 const SizedBox(height: 20),
-                _moreItem(
-                  context,
-                  Icons.inventory_2_rounded,
-                  'Inventory',
-                  'Stock levels & leftover routing',
-                  AppColors.info,
-                  '/admin/inventory',
+                _moreItem(context, Icons.inventory_2_rounded, 'Inventory', 'Stock levels & leftover routing', AppColors.info, const InventoryScreen()),
+                _moreItem(context, Icons.inbox_rounded, 'Feedback Inbox', 'Top/worst dishes & surveys', AppColors.warning, const FeedbackInboxScreen()),
+                _moreItem(context, Icons.people_alt_rounded, 'User Management', 'Student records & overrides', AppColors.accentLight, const UserManagementScreen()),
+                _moreItem(context, Icons.kitchen_rounded, 'Kitchen Display', 'Live serving line status', AppColors.accent, const KitchenDisplayScreen()),
+                const Padding(
+                  padding: EdgeInsets.fromLTRB(20, 16, 20, 8),
+                  child: Text('Innovative Features', style: TextStyle(color: AppColors.textMuted, fontSize: 12, fontWeight: FontWeight.w600)),
                 ),
-                _moreItem(
-                  context,
-                  Icons.inbox_rounded,
-                  'Feedback Inbox',
-                  'Top/worst dishes & surveys',
-                  AppColors.warning,
-                  '/admin/feedback',
-                ),
-                _moreItem(
-                  context,
-                  Icons.people_alt_rounded,
-                  'User Management',
-                  'Student records & overrides',
-                  AppColors.accentLight,
-                  '/admin/users',
-                ),
-                _moreItem(
-                  context,
-                  Icons.event_busy_rounded,
-                  'Leave Review',
-                  'Approve or reject meal leave requests',
-                  AppColors.warning,
-                  '/admin/leaves',
-                ),
-                _moreItem(
-                  context,
-                  Icons.kitchen_rounded,
-                  'Kitchen Display',
-                  'Live serving line status',
-                  AppColors.accent,
-                  '/admin/kitchen',
-                ),
-                const SectionHeader(
-                  title: 'Innovative Features',
-                  actionLabel: 'AI Lab',
-                ),
-                _moreItem(
-                  context,
-                  Icons.science_rounded,
-                  'Digital Twin',
-                  'Simulate next week\'s operations',
-                  AppColors.info,
-                  '/admin/simulation',
-                ),
-                _moreItem(
-                  context,
-                  Icons.flash_on_rounded,
-                  'Surge Manager',
-                  'Dynamic incentives & Happy Hour',
-                  AppColors.warning,
-                  '/admin/surge',
-                ),
-                _moreItem(
-                  context,
-                  Icons.map_rounded,
-                  'Crowd Heatmap',
-                  'Live floorplan congestion',
-                  AppColors.error,
-                  '/admin/heatmap',
-                ),
+                _moreItem(context, Icons.science_rounded, 'Digital Twin', 'Simulate next week\'s operations', AppColors.info, const SimulationScreen()),
+                _moreItem(context, Icons.flash_on_rounded, 'Surge Manager', 'Dynamic incentives & Happy Hour', AppColors.warning, const SurgeManagementScreen()),
+                _moreItem(context, Icons.map_rounded, 'Crowd Heatmap', 'Live floorplan congestion', AppColors.error, const HeatmapScreen()),
                 const SizedBox(height: 100),
               ],
             ),
@@ -247,26 +144,27 @@ class _AdminMoreScreen extends StatelessWidget {
     );
   }
 
-  Widget _moreItem(
-    BuildContext context,
-    IconData icon,
-    String title,
-    String subtitle,
-    Color color,
-    String route,
-  ) {
+  Widget _moreItem(BuildContext context, IconData icon, String title, String subtitle, Color color, Widget screen) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
       child: GestureDetector(
-        onTap: () => Navigator.pushNamed(context, route),
-        child: NeumorphicSection(
-          borderColor: color.withValues(alpha: 0.15),
+        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => screen)),
+        child: Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            gradient: AppColors.cardGradient,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.06)),
+          ),
           child: Row(
             children: [
-              NeuIconTile(
-                icon: icon,
-                iconColor: color,
+              Container(
                 padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(icon, color: color, size: 22),
               ),
               const SizedBox(width: 14),
               Expanded(
@@ -275,18 +173,11 @@ class _AdminMoreScreen extends StatelessWidget {
                   children: [
                     Text(title, style: AppTextStyles.titleMedium),
                     const SizedBox(height: 2),
-                    Text(
-                      subtitle,
-                      style: AppTextStyles.bodySmall.copyWith(fontSize: 11),
-                    ),
+                    Text(subtitle, style: AppTextStyles.bodySmall.copyWith(fontSize: 11)),
                   ],
                 ),
               ),
-              Icon(
-                Icons.chevron_right_rounded,
-                color: AppColors.textMuted,
-                size: 20,
-              ),
+              Icon(Icons.chevron_right_rounded, color: AppColors.textMuted, size: 20),
             ],
           ),
         ),

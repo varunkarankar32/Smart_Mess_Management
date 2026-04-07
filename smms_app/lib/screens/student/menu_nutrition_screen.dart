@@ -11,8 +11,7 @@ class MenuNutritionScreen extends StatefulWidget {
   State<MenuNutritionScreen> createState() => _MenuNutritionScreenState();
 }
 
-class _MenuNutritionScreenState extends State<MenuNutritionScreen>
-    with SingleTickerProviderStateMixin {
+class _MenuNutritionScreenState extends State<MenuNutritionScreen> with SingleTickerProviderStateMixin {
   int _selectedMealIndex = 1; // default to Lunch
   bool _showVegOnly = false;
   late AnimationController _animController;
@@ -20,10 +19,7 @@ class _MenuNutritionScreenState extends State<MenuNutritionScreen>
   @override
   void initState() {
     super.initState();
-    _animController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 500),
-    );
+    _animController = AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
     _animController.forward();
   }
 
@@ -42,9 +38,9 @@ class _MenuNutritionScreenState extends State<MenuNutritionScreen>
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFF0F1724), Color(0xFF111B2D), Color(0xFF0F1724)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+            colors: [Color(0xFF0A0E1A), Color(0xFF0F172A)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
         ),
         child: SafeArea(
@@ -56,38 +52,33 @@ class _MenuNutritionScreenState extends State<MenuNutritionScreen>
                 padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
                 child: Row(
                   children: [
-                    Expanded(
-                      child: Text(
-                        "Today's Menu",
-                        style: AppTextStyles.headlineLarge,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
+                    Text("Today's Menu", style: AppTextStyles.headlineLarge),
+                    const Spacer(),
+                    // Veg filter
                     GestureDetector(
                       onTap: () => setState(() => _showVegOnly = !_showVegOnly),
-                      child: NeumorphicSection(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 8,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: _showVegOnly ? AppColors.accent.withValues(alpha: 0.2) : AppColors.surfaceLight,
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(
+                            color: _showVegOnly ? AppColors.accent.withValues(alpha: 0.4) : Colors.white.withValues(alpha: 0.06),
+                          ),
                         ),
-                        borderRadius: 18,
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Icon(
                               Icons.eco_rounded,
                               size: 14,
-                              color: _showVegOnly
-                                  ? AppColors.accentLight
-                                  : AppColors.textMuted,
+                              color: _showVegOnly ? AppColors.accent : AppColors.textMuted,
                             ),
                             const SizedBox(width: 4),
                             Text(
                               'Veg',
                               style: AppTextStyles.labelSmall.copyWith(
-                                color: _showVegOnly
-                                    ? Colors.white
-                                    : AppColors.textMuted,
+                                color: _showVegOnly ? AppColors.accent : AppColors.textMuted,
                               ),
                             ),
                           ],
@@ -117,46 +108,19 @@ class _MenuNutritionScreenState extends State<MenuNutritionScreen>
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 250),
                         margin: const EdgeInsets.symmetric(horizontal: 4),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 10,
-                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                         decoration: BoxDecoration(
-                          gradient: isSelected
-                              ? const LinearGradient(
-                                  colors: [
-                                    AppColors.surfaceRaised,
-                                    AppColors.surface,
-                                  ],
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                )
-                              : null,
-                          color: isSelected ? null : AppColors.surface,
+                          gradient: isSelected ? AppColors.accentGradient : null,
+                          color: isSelected ? null : AppColors.surfaceLight,
                           borderRadius: BorderRadius.circular(20),
-                          boxShadow: isSelected
-                              ? [
-                                  BoxShadow(
-                                    color: AppColors.shadowLight,
-                                    blurRadius: 10,
-                                    offset: const Offset(-4, -4),
-                                    spreadRadius: -3,
-                                  ),
-                                  BoxShadow(
-                                    color: AppColors.shadowDark,
-                                    blurRadius: 10,
-                                    offset: const Offset(4, 4),
-                                    spreadRadius: -3,
-                                  ),
-                                ]
-                              : null,
+                          boxShadow: isSelected ? [
+                            BoxShadow(color: AppColors.accent.withValues(alpha: 0.3), blurRadius: 12, offset: const Offset(0, 4)),
+                          ] : null,
                         ),
                         child: Text(
                           meals[index].mealType,
                           style: AppTextStyles.labelLarge.copyWith(
-                            color: isSelected
-                                ? Colors.white
-                                : AppColors.textMuted,
+                            color: isSelected ? Colors.white : AppColors.textMuted,
                             fontSize: 13,
                           ),
                         ),
@@ -170,10 +134,7 @@ class _MenuNutritionScreenState extends State<MenuNutritionScreen>
               // Menu Items
               Expanded(
                 child: FadeTransition(
-                  opacity: CurvedAnimation(
-                    parent: _animController,
-                    curve: Curves.easeOut,
-                  ),
+                  opacity: CurvedAnimation(parent: _animController, curve: Curves.easeOut),
                   child: ListView.builder(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     physics: const BouncingScrollPhysics(),
@@ -189,66 +150,27 @@ class _MenuNutritionScreenState extends State<MenuNutritionScreen>
                               Row(
                                 children: [
                                   Container(
-                                    width: 48,
-                                    height: 48,
+                                    width: 48, height: 48,
                                     decoration: BoxDecoration(
-                                      gradient: const LinearGradient(
-                                        colors: [
-                                          AppColors.surfaceRaised,
-                                          AppColors.surface,
-                                        ],
-                                        begin: Alignment.topLeft,
-                                        end: Alignment.bottomRight,
-                                      ),
+                                      color: AppColors.surfaceLight,
                                       borderRadius: BorderRadius.circular(14),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: AppColors.shadowLight,
-                                          blurRadius: 8,
-                                          offset: const Offset(-3, -3),
-                                          spreadRadius: -2,
-                                        ),
-                                        BoxShadow(
-                                          color: AppColors.shadowDark,
-                                          blurRadius: 8,
-                                          offset: const Offset(3, 3),
-                                          spreadRadius: -2,
-                                        ),
-                                      ],
                                     ),
-                                    child: Center(
-                                      child: Text(
-                                        item.imageEmoji,
-                                        style: const TextStyle(fontSize: 26),
-                                      ),
-                                    ),
+                                    child: Center(child: Text(item.imageEmoji, style: const TextStyle(fontSize: 26))),
                                   ),
                                   const SizedBox(width: 12),
                                   Expanded(
                                     child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text(
-                                          item.name,
-                                          style: AppTextStyles.titleMedium,
-                                        ),
+                                        Text(item.name, style: AppTextStyles.titleMedium),
                                         const SizedBox(height: 2),
                                         Row(
                                           children: [
-                                            Icon(
-                                              Icons.star_rounded,
-                                              color: AppColors.warning,
-                                              size: 14,
-                                            ),
+                                            Icon(Icons.star_rounded, color: AppColors.warning, size: 14),
                                             const SizedBox(width: 2),
                                             Text(
                                               '${item.averageRating} (${item.totalRatings})',
-                                              style: AppTextStyles.bodySmall
-                                                  .copyWith(
-                                                    color: AppColors.warning,
-                                                    fontSize: 11,
-                                                  ),
+                                              style: AppTextStyles.bodySmall.copyWith(color: AppColors.warning, fontSize: 11),
                                             ),
                                           ],
                                         ),
@@ -257,29 +179,18 @@ class _MenuNutritionScreenState extends State<MenuNutritionScreen>
                                   ),
                                   // Allergen badges
                                   if (item.allergens.isNotEmpty)
-                                    NeumorphicSection(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 8,
-                                        vertical: 4,
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                      decoration: BoxDecoration(
+                                        color: AppColors.error.withValues(alpha: 0.15),
+                                        borderRadius: BorderRadius.circular(8),
                                       ),
-                                      borderRadius: 10,
                                       child: Row(
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
-                                          const Icon(
-                                            Icons.warning_amber_rounded,
-                                            color: AppColors.error,
-                                            size: 12,
-                                          ),
+                                          const Icon(Icons.warning_amber_rounded, color: AppColors.error, size: 12),
                                           const SizedBox(width: 3),
-                                          Text(
-                                            item.allergens.join(', '),
-                                            style: AppTextStyles.bodySmall
-                                                .copyWith(
-                                                  color: AppColors.error,
-                                                  fontSize: 9,
-                                                ),
-                                          ),
+                                          Text(item.allergens.join(', '), style: AppTextStyles.bodySmall.copyWith(color: AppColors.error, fontSize: 9)),
                                         ],
                                       ),
                                     ),
@@ -289,33 +200,13 @@ class _MenuNutritionScreenState extends State<MenuNutritionScreen>
                               // Macros Row
                               Row(
                                 children: [
-                                  _macroChip(
-                                    '🔥',
-                                    '${item.calories}',
-                                    'kcal',
-                                    AppColors.error,
-                                  ),
+                                  _macroChip('🔥', '${item.calories}', 'kcal', AppColors.error),
                                   const SizedBox(width: 8),
-                                  _macroChip(
-                                    '💪',
-                                    '${item.proteinG.toInt()}g',
-                                    'Protein',
-                                    AppColors.info,
-                                  ),
+                                  _macroChip('💪', '${item.proteinG.toInt()}g', 'Protein', AppColors.info),
                                   const SizedBox(width: 8),
-                                  _macroChip(
-                                    '🌾',
-                                    '${item.carbsG.toInt()}g',
-                                    'Carbs',
-                                    AppColors.warning,
-                                  ),
+                                  _macroChip('🌾', '${item.carbsG.toInt()}g', 'Carbs', AppColors.warning),
                                   const SizedBox(width: 8),
-                                  _macroChip(
-                                    '🫒',
-                                    '${item.fatG.toInt()}g',
-                                    'Fat',
-                                    AppColors.accentLight,
-                                  ),
+                                  _macroChip('🫒', '${item.fatG.toInt()}g', 'Fat', AppColors.accentLight),
                                 ],
                               ),
                             ],
@@ -335,27 +226,17 @@ class _MenuNutritionScreenState extends State<MenuNutritionScreen>
 
   Widget _macroChip(String emoji, String value, String label, Color color) {
     return Expanded(
-      child: NeumorphicSection(
+      child: Container(
         padding: const EdgeInsets.symmetric(vertical: 8),
-        borderRadius: 12,
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.08),
+          borderRadius: BorderRadius.circular(10),
+        ),
         child: Column(
           children: [
-            Text(
-              '$emoji $value',
-              style: AppTextStyles.labelSmall.copyWith(
-                color: color,
-                fontWeight: FontWeight.w700,
-                fontSize: 11,
-              ),
-            ),
+            Text('$emoji $value', style: AppTextStyles.labelSmall.copyWith(color: color, fontWeight: FontWeight.w700, fontSize: 11)),
             const SizedBox(height: 2),
-            Text(
-              label,
-              style: AppTextStyles.bodySmall.copyWith(
-                fontSize: 9,
-                color: AppColors.textMuted,
-              ),
-            ),
+            Text(label, style: AppTextStyles.bodySmall.copyWith(fontSize: 9, color: AppColors.textMuted)),
           ],
         ),
       ),

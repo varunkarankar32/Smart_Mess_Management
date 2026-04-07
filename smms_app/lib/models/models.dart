@@ -118,7 +118,6 @@ class AttendanceModel {
   final String mealType;
   final DateTime scanTime;
   final bool isValid;
-  final String status;
 
   const AttendanceModel({
     required this.id,
@@ -128,7 +127,6 @@ class AttendanceModel {
     required this.mealType,
     required this.scanTime,
     this.isValid = true,
-    this.status = 'valid',
   });
 }
 
